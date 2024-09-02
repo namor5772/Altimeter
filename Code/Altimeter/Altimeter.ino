@@ -15,9 +15,9 @@ BaroSensorClass BaroSensor;
 // digital pin 7 has a pushbutton attached to it. Give it a name:
 int pushButton = 7;
 float temp, pressure, altBase, alt, altRel;
-char altstr[11];
-char altstr2[11];
-char tempstr[11];
+char altstr[14];
+char altstr2[14];
+char tempstr[14];
 
 
 void setup()
@@ -72,13 +72,13 @@ void loop()
   
   // Display the data
   
-  dtostrf(altRel,10,1,altstr);
+  dtostrf(altRel,13,1,altstr);
   u8x8.drawString(0,0,altstr);
 
-  dtostrf(alt,10,1,altstr2);
+  dtostrf(alt,13,1,altstr2);
   u8x8.drawString(0,2,altstr2);
 
-  dtostrf(temp,10,1,tempstr);
+  dtostrf(temp,13,1,tempstr);
   u8x8.drawString(0,4,tempstr);
 
   delay(500);
