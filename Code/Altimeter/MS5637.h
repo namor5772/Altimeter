@@ -36,7 +36,7 @@ class BaroSensorClass {
   /* Update both temperature and pressure together. This takes less
      time than calling each function separately (as pressure result
      depends on temperature.) Returns true for success, false on an
-     error */
+     error, TempUnit & OSR have defaults of CELSIUS & OSR_8192 */
   bool getTempAndPressure(float *temperature,
                           float *pressure,
                           TempUnit tempScale = CELSIUS,
