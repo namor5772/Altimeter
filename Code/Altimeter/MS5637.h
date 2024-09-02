@@ -9,7 +9,8 @@
 /* i2c address of module */
 #define BARO_ADDR 0x76
 
-enum OSR {OSR_256, OSR_512, OSR_1024, OSR_2048, OSR_4096, OSR_8192 };
+en
+um OSR {OSR_256, OSR_512, OSR_1024, OSR_2048, OSR_4096, OSR_8192 };
 enum TempUnit {CELSIUS, FAHRENHEIT};
 
 /* delay to wait for sampling to complete, on each OSR level */

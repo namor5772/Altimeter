@@ -15,9 +15,9 @@ BaroSensorClass BaroSensor;
 // digital pin 7 has a pushbutton attached to it. Give it a name:
 int pushButton = 7;
 float temp, pressure, altBase, alt, altRel;
-char altstr[9];
-char altstr2[9];
-char tempstr[9];
+char altstr[11];
+char altstr2[11];
+char tempstr[11];
 
 
 void setup()
@@ -47,13 +47,12 @@ void loop()
   // read the input pin to toggle LED:
   int buttonState = digitalRead(pushButton);
 
-/*
   if (!BaroSensor.isOK()) {
     // Try to reinitialise the sensor if we can
     BaroSensor.begin();
     BaroSensor.getTempAndPressure(&temp, &pressure);
   }
-  else */ if (buttonState==1) {
+  else if (buttonState==1) {
     // Zero the altimeter (when button is pressed)
     BaroSensor.getTempAndPressure(&temp, &pressure);
     altBase = BaroSensor.pressure2altitude(pressure);
@@ -73,14 +72,14 @@ void loop()
   
   // Display the data
   
-  dtostrf(altRel,8,1,altstr);
+  dtostrf(altRel,10,1,altstr);
   u8x8.drawString(0,0,altstr);
 
-  dtostrf(alt,8,1,altstr2);
+  dtostrf(alt,10,1,altstr2);
   u8x8.drawString(0,2,altstr2);
 
-  dtostrf(temp,8,1,tempstr);
-  u8x8.drawString(0,6,tempstr);
+  dtostrf(temp,10,1,tempstr);
+  u8x8.drawString(0,4,tempstr);
 
   delay(500);
 }
