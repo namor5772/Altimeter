@@ -79,7 +79,7 @@ void loop()
   u8x8.drawString(0,2,altstr2);
 
   dtostrf(temp,13,1,tempstr);
-  u8x8.drawString(0,4,tempstr);
+  u8x8.drawString(0,6,tempstr);
 
   delay(500);
 }
