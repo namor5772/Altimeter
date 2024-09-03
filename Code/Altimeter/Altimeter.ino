@@ -11,12 +11,12 @@
 // The module (in SPI mode) has 7 pins
 // GND - connect to ground pin on micro (Arduino Pro Mini 5V 16Mhz assumed here)
 // VCC - connect to VCC pin on micro (assumed 5V)
-// CLK - Clock, connect to Pin 13 on micro (assumed by default)
-// MISO - Master In Slave Out, NOT AVAILABLE HERE - but would be pin 12 on micro 
-// MOSI - Master Out Slave In, connect to pin 11 on micro (assumed by default)
+// CLK - Clock, connect to Pin 13 on micro (assumed by default) - WIRE 3
+// MISO - Master In Slave Out, NOT AVAILABLE HERE - but would be pin 12 on micro - WIRE 2 
+// MOSI - Master Out Slave In, connect to pin 11 on micro (assumed by default) - WIRE 1
 // RES - Reset, connect to Pin 8 (can change)
-// DC - Data/Command, connect to pin 9 (can change) - This seems to be the 4th wire 
-// CS - Chip Select, connect to pin 10 (can change)
+// DC - Data/Command, connect to pin 9 (can change) 
+// CS - Chip Select, connect to pin 10 (can change) - WIRE 4
 U8X8_SH1106_128X64_NONAME_4W_HW_SPI u8x8(/*cs=*/10,/*dc=*/9,/*reset=*/8);
 
 // an instance of the BaroSensorClass called BaroSensor is created
