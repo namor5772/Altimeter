@@ -72,10 +72,10 @@ void loop()
   
   // Display the data
   
-  dtostrf(altRel,13,1,altstr);
+  dtostrf(altRel,8,1,altstr);
   u8x8.drawString(0,0,altstr);
 
-  dtostrf(alt,13,1,altstr2);
+  dtostrf(alt,8,1,altstr2);
   u8x8.drawString(0,2,altstr2);
 
   dtostrf(temp,8,1,tempstr);
