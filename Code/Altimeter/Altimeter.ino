@@ -8,6 +8,14 @@
 
 
 // an instance of the U8X8_SH1106_128X64_NONAME_4W_HW_SPI class called u8x8 is created
+// The module (in SPI mode) has 7 pins
+// GND - connect to ground pin on micro (Arduino Pro Mini 5V 16Mhz assumed here)
+// VCC - connect to VCC pin on micro (assumed 5V)
+// CLK - Clock, connect to Pin 13 on micro (assumed by default)
+// MOSI - Master out Slave in, connect to pin 11 on micro (assumed by default)
+// RES - Reset, connect to Pin 8 (can change)
+// DC - Data/Command, connect to pin 9 (can change)
+// CD - Chip Select, connect to pin 10 (can change)
 U8X8_SH1106_128X64_NONAME_4W_HW_SPI u8x8(/*cs=*/10,/*dc=*/9,/*reset=*/8);
 // an instance of the BaroSensorClass called BaroSensor is created
 BaroSensorClass BaroSensor;
