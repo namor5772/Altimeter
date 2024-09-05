@@ -46,6 +46,7 @@ bool BaroSensorClass::getTempAndPressure(float *temperature, float *pressure, Te
   if(temperature != NULL) {
     *temperature = (float)(temp - t2) / 100;
     if(tempScale == FAHRENHEIT)
+    
       *temperature = *temperature * 9 / 5 + 32;
   }
 
