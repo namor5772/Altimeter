@@ -1,11 +1,25 @@
 
 #include "MS5637.h"
-#include <U8x8lib.h>
+#include <PololuOLED.h>
 
-#ifdef U8X8_HAVE_HW_SPI
+//#include <U8x8lib.h>
+
+//#ifdef U8X8_HAVE_HW_SPI
 #include <SPI.h>
-#endif
+//#endif
 
+/*************************************************************************************************
+Programming the Arduino PRO Mini using a duinothech USB to FTDI Serial Adatptor Module (XC-4464),
+Note: This assumes the PRO Mini has a valid burnt bootloader.
+Pins from top left hand corner of Pro Mini downwards (funny names on board),
+also pinout to using an Arduino Nano as FTDI serial adaptor:
+1 GRN - connect to   DTR   on FTDI adapter or   RST   on Nano programmer
+2 TXO - connect to   RXD   on FTDI adapter or   TXI   on Nano programmer
+3 RXI - connect to   TXD   on FTDI adapter or   RXO   on Nano programmer
+4 VCC - connect to   5V    on FTDI adapter or   5V    on Nano programmer
+5 GND - connect to   CTS   on FTDI adapter or   GND   on Nano programmer
+6 BLK - connect to   GND   on FTDI adapter or   GND   on Nano programmer
+*************************************************************************************************/
 
 // an instance of the U8X8_SH1106_128X64_NONAME_4W_HW_SPI class called u8x8 is created
 // The module (in SPI mode) has 7 pins (which on the Arduino PRO Mini with HW SPI use):
@@ -17,7 +31,10 @@
 // 5 RES - Reset, connect to Pin 8 (can change)
 // 6 DC - Data/Command, connect to pin 9 (can change) 
 // 7 CS - Chip Select, connect to pin 10 (can change) - WIRE 4
-U8X8_SH1106_128X64_NONAME_4W_HW_SPI u8x8(/*cs=*/10,/*dc=*/9,/*reset=*/8);
+// U8X8_SH1106_128X64_NONAME_4W_HW_SPI u8x8(/*cs=*/10,/*dc=*/9,/*reset=*/8);
+
+// The pins are specified in this order: CLK, MOS, RES, DC, CS.
+PololuSH1106 display(13, 11, 8, 9, 10);
 
 // an instance of the BaroSensorClass called Baro is created
 // The module is I2C and has just 4 pins:
@@ -31,7 +48,7 @@ BaroSensorClass Baro;
 // Pin set to INPUT_PULLUP (to not require external resistor)
 const int buttonPin = A0; // Pin connected to the push button (14)
 
-// Pin connected to red LED Anode (long+), LED Cathode(short-) connected to 220R resistor
+// Pin connected to red LED Anode (long+), LED Cathode(short-) connected to 220 R resistor,
 // other side of resistor connected to GND
 const int ledPin = A1; // LED pin (15) 
 
@@ -58,11 +75,13 @@ void setup()
   Serial.println(altBase);
  
   // setup SH1106 SPI display
+/*  
   u8x8.begin();
   u8x8.setPowerSave(0);
   u8x8.clearDisplay();
   u8x8.setFlipMode(1);  
   u8x8.setFont(u8x8_font_8x13B_1x2_f); 
+*/  
 }
 
 
@@ -106,7 +125,7 @@ void loop()
   Serial.println(altRel);
   
   // Display the data on the OLED screen
-  
+/*  
   dtostrf(altRel,16,1,altstr);
   u8x8.drawString(0,0,altstr);
 
@@ -115,8 +134,15 @@ void loop()
 
   u8x8.drawString(0,4,test);
 
-  dtostrf(temp,16,1,tempstr);
+  dtostrf(temp,10,1,tempstr);
   u8x8.drawString(0,6,tempstr);
-
+*/
+  display.gotoXY(0, 0);
+  display.print(altRel);
+  display.print("_______");
+  display.gotoXY(0, 1);
+  display.print(alt);
+  display.print("_______");
+ 
   delay(500);
 }
