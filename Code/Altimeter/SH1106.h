@@ -12,7 +12,6 @@
 static inline uint8_t repeatBits(uint8_t d);
 
 class SH1106 {
-  typedef unsigned char uchar;
 
   public:
 /*  
