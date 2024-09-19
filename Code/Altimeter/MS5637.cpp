@@ -1,5 +1,4 @@
 #include "MS5637.h"
-#include "Wire.h"
 
 void BaroSensorClass::begin() {
   Wire.begin();

@@ -1,12 +1,9 @@
 
 #include "MS5637.h"
-#include <PololuOLED.h>
+#include "SH1106.h"
+#include <PololuSH1106.h>
 
-//#include <U8x8lib.h>
-
-//#ifdef U8X8_HAVE_HW_SPI
-#include <SPI.h>
-//#endif
+#define SMALL
 
 /*************************************************************************************************
 Programming the Arduino PRO Mini using a duinothech USB to FTDI Serial Adatptor Module (XC-4464),
@@ -21,20 +18,13 @@ also pinout to using an Arduino Nano as FTDI serial adaptor:
 6 BLK - connect to   GND   on FTDI adapter or   GND   on Nano programmer
 *************************************************************************************************/
 
-// an instance of the U8X8_SH1106_128X64_NONAME_4W_HW_SPI class called u8x8 is created
-// The module (in SPI mode) has 7 pins (which on the Arduino PRO Mini with HW SPI use):
-// 1 GND - connect to ground pin on micro (Arduino Pro Mini 5V 16Mhz assumed here)
-// 2 VCC - connect to VCC pin on micro (assumed 5V)
-// 3 CLK - Clock, connect to Pin 13 on micro (assumed by default) - WIRE 3
-// MISO - Master In Slave Out, NOT AVAILABLE HERE - but would be pin 12 on micro - WIRE 2 
-// 4 MOSI (SDI?)- Master Out Slave In, connect to pin 11 on micro (assumed by default) - WIRE 1
-// 5 RES - Reset, connect to Pin 8 (can change)
-// 6 DC - Data/Command, connect to pin 9 (can change) 
-// 7 CS - Chip Select, connect to pin 10 (can change) - WIRE 4
-// U8X8_SH1106_128X64_NONAME_4W_HW_SPI u8x8(/*cs=*/10,/*dc=*/9,/*reset=*/8);
-
 // The pins are specified in this order: CLK, MOS, RES, DC, CS.
-PololuSH1106 display(13, 11, 8, 9, 10);
+#ifdef SMALL
+  // 3-Wire SPIThe pins are specified in this order: CLK, MOS, RES, DC, CS.
+  SH1106 OLED(13, 11, 8, 9, 10);
+#else  
+  PololuSH1106 display(13 /* CLK */, 11 /* MOSI */, 8 /* RES */, 9 /* DC */, 10 /* CS */);
+#endif  
 
 // an instance of the BaroSensorClass called Baro is created
 // The module is I2C and has just 4 pins:
@@ -53,10 +43,8 @@ const int buttonPin = A0; // Pin connected to the push button (14)
 const int ledPin = A1; // LED pin (15) 
 
 float temp, pressure, altBase, alt, altRel;
-char test[17] = "0123456789ABCDEF";
-char altstr[17];
-char altstr2[17];
-char tempstr[17];
+char str1[11];
+char str2[11];
 
 
 void setup()
@@ -74,14 +62,28 @@ void setup()
   altBase = 0;
   Serial.println(altBase);
  
-  // setup SH1106 SPI display
+#ifdef SMALL
+//  OLED.invert();
+//  OLED.setLayout8x2();
+  OLED.rotate180();
+//  OLED.writeChar(0,0,20);
 /*  
-  u8x8.begin();
-  u8x8.setPowerSave(0);
-  u8x8.clearDisplay();
-  u8x8.setFlipMode(1);  
-  u8x8.setFont(u8x8_font_8x13B_1x2_f); 
+  uint8_t s = 3;
+
+  for (int i=0; i<7; i++) {
+    OLED.writeChar(i,2+s*i,s);  
+  };
 */  
+//  OLED.NEWwriteChar(7,2+s*7,s);
+//  OLED.CursorStop();
+#else
+  //display.invert();
+  display.rotate180();
+  display.setContrast(255);
+  display.setLayout11x4();
+#endif  
+
+  
 }
 
 
@@ -125,24 +127,41 @@ void loop()
   Serial.println(altRel);
   
   // Display the data on the OLED screen
-/*  
-  dtostrf(altRel,16,1,altstr);
-  u8x8.drawString(0,0,altstr);
 
-  dtostrf(alt,16,1,altstr2);
-  u8x8.drawString(0,2,altstr2);
-
-  u8x8.drawString(0,4,test);
-
-  dtostrf(temp,10,1,tempstr);
-  u8x8.drawString(0,6,tempstr);
+#ifdef SMALL
+  /*
+  OLED.gotoXY(0,0);
+  OLED.write(0x30);
+  OLED.write(0x31);
+  OLED.write(0x32);
+  OLED.write(0x33);
+  OLED.writeChar(0,0,20);
+  OLED.write(0x34);
+  OLED.writeChar(0,0,20);
 */
+  uint8_t s = 18;
+  int i = 0;
+  OLED.writeBlock(i, 2+s*i, s, 0xF0); ++i;
+  OLED.writeBlock(i, 2+s*i, s, 0xF1); ++i;  
+  OLED.writeBlock(i, 2+s*i, s, 0xAB); ++i;  
+  OLED.writeBlock(i, 2+s*i, s, 0xFF); ++i;  
+  OLED.writeBlock(i, 2+s*i, s, 0xFF); ++i;  
+  OLED.writeBlock(i, 2+s*i, s, 0xFF); ++i;  
+  OLED.writeBlock(i, 2+s*i, s, 0xFF); ++i;  
+  OLED.writeBlock(i, 2+s*i, 2, 0xFF); ++i;  
+  OLED.writeEND();
+#else
   display.gotoXY(0, 0);
-  display.print(altRel);
-  display.print("_______");
-  display.gotoXY(0, 1);
-  display.print(alt);
-  display.print("_______");
- 
-  delay(500);
+  strcpy(str1," ft");
+  dtostrf(altRel,7,1,str2);
+  strcat(str2,str1);
+  display.print(str2);
+  display.gotoXY(2, 2);
+  strcpy(str1," ft");
+  dtostrf(alt,5,0,str2);
+  strcat(str2,str1);
+  display.print(str2);
+#endif
+  
+  delay(200);
 }

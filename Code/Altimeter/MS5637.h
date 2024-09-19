@@ -4,7 +4,8 @@
  * the MS5637 Pressure/Temperature sensor module.
  * Stolen and modified from Angus Gratton (angus at freetronics dot com)
  */
-#include "Arduino.h"
+#include <Arduino.h>
+#include <Wire.h>
 
 /* i2c address of module */
 #define BARO_ADDR 0x76
