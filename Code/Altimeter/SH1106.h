@@ -29,6 +29,9 @@ class SH1106 {
       - Called A0 (HIGH= data mode, LOW= command mode) Wire 4 in SH1106 pdf 
  7 CS - Chip Select, connect to pin 10 (can change) - WIRE 4 
       - Called CS (upper score) Wire 1 in SH1106 pdf
+Note: The screen pixels are accessed in vertical bytes (least significant bit at top),
+8 pages (giving 64 = 8 x 8 bits), there are 128 visible columns, strangely ranging
+from 2 to 129.      
 */
   SH1106(uint8_t clk, uint8_t mos, uint8_t res, uint8_t dc, uint8_t cs); // Constructor
 
@@ -74,6 +77,8 @@ class SH1106 {
   void gotoXY(uint8_t x, uint8_t y);
   size_t write(uint8_t d);
   void writeBlock(uint8_t page, uint8_t columnAddr, uint8_t columnNum, uint8_t column);
+  void write8x8Char(uint8_t page, uint8_t column, uint8_t charCode);
+  void write8x8CharA(uint8_t page, uint8_t column, char c);
   void writeEND();
 };
 

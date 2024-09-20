@@ -228,6 +228,43 @@ void SH1106::writeBlock(uint8_t page, uint8_t columnAddr, uint8_t columnNum, uin
   TransferEnd();
 }
 
+// displays an 8x8 char at specified page and column position,
+// with char data bytes x8 being obtained from ibm8x8v1[][8] array element charCode
+void SH1106::write8x8Char(uint8_t page, uint8_t column, uint8_t charCode) {
+  uint8_t columnByte;
+  TransferStart();
+  CommandMode();
+  Write(SH1106_SET_PAGE_ADDR | page);
+  Write(SH1106_SET_COLUMN_ADDR_HIGH | ((column+2) >> 4));
+  Write(SH1106_SET_COLUMN_ADDR_LOW | ((column+2) & 0xF));
+  DataMode();
+  for (uint8_t i = 0; i < 8; i++) {
+    columnByte = pgm_read_byte(&Font2[charCode][i]); 
+    Write(columnByte);
+  }  
+  TransferEnd();
+}
+
+// displays an 8x8 char at specified page and column position,
+// with char data bytes x8 being obtained from ibm8x8v1[][8] array element charCode
+void SH1106::write8x8CharA(uint8_t page, uint8_t column, char c) {
+  uint8_t columnByte;
+  uint8_t charCode = (uint8_t)c;
+  TransferStart();
+  CommandMode();
+  Write(SH1106_SET_PAGE_ADDR | page);
+  Write(SH1106_SET_COLUMN_ADDR_HIGH | ((column+2) >> 4));
+  Write(SH1106_SET_COLUMN_ADDR_LOW | ((column+2) & 0xF));
+  DataMode();
+  for (uint8_t i = 0; i < 8; i++) {
+    columnByte = pgm_read_byte(&Font2[charCode][i]); 
+    Write(columnByte);
+  }  
+  TransferEnd();
+}
+
+
+
 // After writing to screen need to call this to stop cursor?
 void SH1106::writeEND() {
   TransferStart();

@@ -63,19 +63,7 @@ void setup()
   Serial.println(altBase);
  
 #ifdef SMALL
-//  OLED.invert();
-//  OLED.setLayout8x2();
   OLED.rotate180();
-//  OLED.writeChar(0,0,20);
-/*  
-  uint8_t s = 3;
-
-  for (int i=0; i<7; i++) {
-    OLED.writeChar(i,2+s*i,s);  
-  };
-*/  
-//  OLED.NEWwriteChar(7,2+s*7,s);
-//  OLED.CursorStop();
 #else
   //display.invert();
   display.rotate180();
@@ -129,26 +117,25 @@ void loop()
   // Display the data on the OLED screen
 
 #ifdef SMALL
-  /*
-  OLED.gotoXY(0,0);
-  OLED.write(0x30);
-  OLED.write(0x31);
-  OLED.write(0x32);
-  OLED.write(0x33);
-  OLED.writeChar(0,0,20);
-  OLED.write(0x34);
-  OLED.writeChar(0,0,20);
-*/
   uint8_t s = 18;
   int i = 0;
-  OLED.writeBlock(i, 2+s*i, s, 0xF0); ++i;
-  OLED.writeBlock(i, 2+s*i, s, 0xF1); ++i;  
-  OLED.writeBlock(i, 2+s*i, s, 0xAB); ++i;  
-  OLED.writeBlock(i, 2+s*i, s, 0xFF); ++i;  
-  OLED.writeBlock(i, 2+s*i, s, 0xFF); ++i;  
-  OLED.writeBlock(i, 2+s*i, s, 0xFF); ++i;  
-  OLED.writeBlock(i, 2+s*i, s, 0xFF); ++i;  
-  OLED.writeBlock(i, 2+s*i, 2, 0xFF); ++i;  
+  int d = 350;
+  OLED.write8x8CharA(0, i, 'H'); i=i+8; delay(d);
+  OLED.write8x8CharA(0, i, 'e'); i=i+8; delay(d);
+  OLED.write8x8CharA(0, i, 'l'); i=i+8; delay(d);
+  OLED.write8x8CharA(0, i, 'l'); i=i+8; delay(d);
+  OLED.write8x8CharA(0, i, 'o'); i=i+8; delay(d);
+  i = 0;
+  OLED.write8x8CharA(1, i, 'L'); i=i+8; delay(d);
+  OLED.write8x8CharA(1, i, 'e'); i=i+8; delay(d);
+  OLED.write8x8CharA(1, i, 'e'); i=i+8; delay(d);
+  OLED.write8x8CharA(1, i, '-'); i=i+8; delay(d);
+  OLED.write8x8CharA(1, i, 'A'); i=i+8; delay(d);
+  OLED.write8x8CharA(1, i, 'n'); i=i+8; delay(d);
+  OLED.write8x8CharA(1, i, 'n'); i=i+8; delay(d);
+  OLED.write8x8CharA(1, i, ' '); i=i+8; delay(d);
+  OLED.write8x8CharA(1, i, '!'); i=i+8; delay(d);
+
   OLED.writeEND();
 #else
   display.gotoXY(0, 0);
