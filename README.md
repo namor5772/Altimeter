@@ -5,7 +5,8 @@ A digital altimeter using a MS5637 based pressure sensor board and a 1.3" OLED S
 # LCD Assistant
 download from https://en.radzio.dxp.pl/bitmap_converter/
 I have used this to generate files for this project. Fonts, splash screens, graphics. Bitmaps generated with MS Paint.
-It only runs on Windows. No fancy downloads necessary. Just run the LCDAssistant.exe file from anywhere
+It only runs on Windows. No fancy downloads necessary. Just run the LCDAssistant.exe file from anywhere.
+Its exe file is availble in the Extra directory.
 
 LCD Assistant is a free tool for converting monochromatic bitmaps to data arrays for easy use with programs for embedded systems with microcontrollers and graphics monochromatic LCD displays like a T6963C, KS0108, SED1335 etc. Program create files for use with any C compiler : for AVR, ARM, PIC, 8051 and ohter microcontrollers. You can use directly with Arduino, mbed and any other design environment based on C compiler. If you use graphic LCDs and you want to display pictures, this program is for You! You can draw image in you best graphic editor and save it in *.bmp file.
 
