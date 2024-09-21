@@ -75,10 +75,8 @@ from 2 to 129.
   void invert();
   void rotate180();
   void gotoXY(uint8_t x, uint8_t y);
-  size_t write(uint8_t d);
-  void writeBlock(uint8_t page, uint8_t columnAddr, uint8_t columnNum, uint8_t column);
-  void write8x8Char(uint8_t page, uint8_t column, uint8_t charCode);
-  void write8x8CharA(uint8_t page, uint8_t column, char c);
+  void writeBlock(uint8_t page, uint8_t col, uint8_t pages, uint8_t cols, uint16_t address);
+  void write8x8Char(uint8_t page, uint8_t column, uint16_t charCode);
   void writeEND();
 };
 

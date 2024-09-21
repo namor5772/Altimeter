@@ -200,37 +200,32 @@ void SH1106::gotoXY(uint8_t x, uint8_t y) {
   textCursorY = y;
 }
 
-size_t SH1106::write(uint8_t d) {
-  if (textCursorY >= textBufferHeight) { return 0; }
-  if (textCursorX >= textBufferWidth) { return 0; }
-
-  *(getLinePointer(textCursorY) + textCursorX) = d;
-
-  if (!disableAutoDisplay) {
-    displayPartial(textCursorX, textCursorY, 1);
-  }
-
-  textCursorX++;
-  return 1;
-}
-
-
-void SH1106::writeBlock(uint8_t page, uint8_t columnAddr, uint8_t columnNum, uint8_t column) {
+// displays a block of data to screen, at top-left-hand position (page, col),
+// ie pixel row is pagex8 and pixel column is col.
+// the height is pages high (ie pagesx8 pixels) and cols pixels wide.
+// the data (in vertical-encoding) is stored in a 1d array of bytes called array,
+// while the offset for individual bytes (to display) is in address which has to be uint16_t
+// since de array might have more than 256 elements.
+void SH1106::writeBlock(uint8_t page, uint8_t col, uint8_t pages, uint8_t cols, uint16_t address) {
+  uint8_t columnByte;
   TransferStart();
   CommandMode();
   Write(SH1106_SET_PAGE_ADDR | page);
-  Write(SH1106_SET_COLUMN_ADDR_HIGH | (columnAddr >> 4));
-  Write(SH1106_SET_COLUMN_ADDR_LOW | (columnAddr & 0xF));
+  Write(SH1106_SET_COLUMN_ADDR_HIGH | ((col + 2) >> 4));
+  Write(SH1106_SET_COLUMN_ADDR_LOW | ((col + 2) & 0xF));
   DataMode();
-  for (uint8_t i = 0; i < columnNum; i++) {
-    Write(column);
+  for (uint8_t i = 0; i < cols; i++) {
+    columnByte = pgm_read_byte(&Blob[address + i]); 
+    Write(columnByte);
   }  
   TransferEnd();
 }
 
 // displays an 8x8 char at specified page and column position,
-// with char data bytes x8 being obtained from ibm8x8v1[][8] array element charCode
-void SH1106::write8x8Char(uint8_t page, uint8_t column, uint8_t charCode) {
+// with char data bytes x8 (in vertical encoding) being obtained from Font2[][8] array
+// charCode can be input as eg 'A' since they are implicitly uint8_t.
+// need a mysterious 2 pixel offset for column !?
+void SH1106::write8x8Char(uint8_t page, uint8_t column, uint16_t charCode) {
   uint8_t columnByte;
   TransferStart();
   CommandMode();
@@ -239,29 +234,12 @@ void SH1106::write8x8Char(uint8_t page, uint8_t column, uint8_t charCode) {
   Write(SH1106_SET_COLUMN_ADDR_LOW | ((column+2) & 0xF));
   DataMode();
   for (uint8_t i = 0; i < 8; i++) {
-    columnByte = pgm_read_byte(&Font2[charCode][i]); 
+    columnByte = pgm_read_byte(&Font8x8[charCode][i]); 
     Write(columnByte);
   }  
   TransferEnd();
 }
 
-// displays an 8x8 char at specified page and column position,
-// with char data bytes x8 being obtained from ibm8x8v1[][8] array element charCode
-void SH1106::write8x8CharA(uint8_t page, uint8_t column, char c) {
-  uint8_t columnByte;
-  uint8_t charCode = (uint8_t)c;
-  TransferStart();
-  CommandMode();
-  Write(SH1106_SET_PAGE_ADDR | page);
-  Write(SH1106_SET_COLUMN_ADDR_HIGH | ((column+2) >> 4));
-  Write(SH1106_SET_COLUMN_ADDR_LOW | ((column+2) & 0xF));
-  DataMode();
-  for (uint8_t i = 0; i < 8; i++) {
-    columnByte = pgm_read_byte(&Font2[charCode][i]); 
-    Write(columnByte);
-  }  
-  TransferEnd();
-}
 
 
 

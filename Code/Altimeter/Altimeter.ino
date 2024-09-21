@@ -119,22 +119,31 @@ void loop()
 #ifdef SMALL
   uint8_t s = 18;
   int i = 0;
-  int d = 350;
-  OLED.write8x8CharA(0, i, 'H'); i=i+8; delay(d);
-  OLED.write8x8CharA(0, i, 'e'); i=i+8; delay(d);
-  OLED.write8x8CharA(0, i, 'l'); i=i+8; delay(d);
-  OLED.write8x8CharA(0, i, 'l'); i=i+8; delay(d);
-  OLED.write8x8CharA(0, i, 'o'); i=i+8; delay(d);
+  int d = 100;
+  OLED.write8x8Char(0, i, 'H'); i=i+8; delay(d);
+  OLED.write8x8Char(0, i, 'e'); i=i+8; delay(d);
+  OLED.write8x8Char(0, i, 'l'); i=i+8; delay(d);
+  OLED.write8x8Char(0, i, 'l'); i=i+8; delay(d);
+  OLED.write8x8Char(0, i, 'o'); i=i+8; delay(d);
   i = 0;
-  OLED.write8x8CharA(1, i, 'L'); i=i+8; delay(d);
-  OLED.write8x8CharA(1, i, 'e'); i=i+8; delay(d);
-  OLED.write8x8CharA(1, i, 'e'); i=i+8; delay(d);
-  OLED.write8x8CharA(1, i, '-'); i=i+8; delay(d);
-  OLED.write8x8CharA(1, i, 'A'); i=i+8; delay(d);
-  OLED.write8x8CharA(1, i, 'n'); i=i+8; delay(d);
-  OLED.write8x8CharA(1, i, 'n'); i=i+8; delay(d);
-  OLED.write8x8CharA(1, i, ' '); i=i+8; delay(d);
-  OLED.write8x8CharA(1, i, '!'); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, 'L'); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, 'e'); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, 'e'); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, '-'); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, 'A'); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, 'n'); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, 'n'); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, ' '); i=i+8; delay(d);
+  OLED.write8x8Char(1, i, '!'); i=i+8; delay(d);
+  OLED.write8x8Char(4, 0, 0x80);
+  OLED.write8x8Char(4, 10, 0x80);
+  OLED.write8x8Char(4, 20, 0x41);
+  OLED.write8x8Char(4, 30, 'A');
+  OLED.writeBlock(5, 0, 1, 8, 0x0000);
+  OLED.writeBlock(5, 8, 1, 8, 0x0008);
+  OLED.writeBlock(5, 16, 1, 8, 0x0010);
+  OLED.writeBlock(5, 24, 1, 8, 0x0018);
+  
 
   OLED.writeEND();
 #else
