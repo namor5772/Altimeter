@@ -1,9 +1,6 @@
-
 #include "MS5637.h"
 #include "SH1106.h"
-#include <PololuSH1106.h>
-
-#define SMALL
+#include "Display.h"
 
 /*************************************************************************************************
 Programming the Arduino PRO Mini using a duinothech USB to FTDI Serial Adatptor Module (XC-4464),
@@ -18,15 +15,12 @@ also pinout to using an Arduino Nano as FTDI serial adaptor:
 6 BLK - connect to   GND   on FTDI adapter or   GND   on Nano programmer
 *************************************************************************************************/
 
-// The pins are specified in this order: CLK, MOS, RES, DC, CS.
-#ifdef SMALL
-  // 3-Wire SPIThe pins are specified in this order: CLK, MOS, RES, DC, CS.
-  SH1106 OLED(13, 11, 8, 9, 10);
-#else  
-  PololuSH1106 display(13 /* CLK */, 11 /* MOSI */, 8 /* RES */, 9 /* DC */, 10 /* CS */);
-#endif  
+// An instance of the SH1106 class called OLED is created
+// The module uses an enhanced 3-Wire SPI communications protcol
+// The specified pins are: CLK, MOS, RES, DC, CS.
+SH1106 OLED(13, 11, 8, 9, 10);
 
-// an instance of the BaroSensorClass called Baro is created
+// An instance of the BaroSensorClass called Baro is created
 // The module is I2C and has just 4 pins:
 // 1 GND - connect to ground pin on micro (Arduino Pro Mini 5V 16Mhz assumed here)
 // 2 SDA - connect to SDA pin on micro (also called D2)
@@ -43,9 +37,10 @@ const int buttonPin = A0; // Pin connected to the push button (14)
 const int ledPin = A1; // LED pin (15) 
 
 float temp, pressure, altBase, alt, altRel;
-char str1[11];
-char str2[11];
-
+char str_old0[17];
+char str_new0[17];
+char str_old[17];
+char str_new[17];
 
 void setup()
 {
@@ -54,24 +49,16 @@ void setup()
   pinMode(buttonPin, INPUT_PULLUP); // set the button pin as input with internal pull-up resistor
   pinMode(ledPin, OUTPUT); // Set the LED pin as output
 
-  // setup MS5637 sensor (An instance of the BaroSensorClass object BaroSensor has been constructed in MS5637.cpp)
+  // setup MS5637 sensor (An instance of the BaroSensorClass object BaroSensor has been constructed above)
   Baro.begin();
   Baro.dumpDebugOutput();
   Baro.getTempAndPressure(&temp, &pressure);
   //altBase = BaroSensor.pressure2altitude(pressure);
   altBase = 0;
   Serial.println(altBase);
- 
-#ifdef SMALL
-  OLED.rotate180();
-#else
-  //display.invert();
-  display.rotate180();
-  display.setContrast(255);
-  display.setLayout11x4();
-#endif  
 
-  
+  // initialise str_old, for its first use in loop()
+  for (int i=0; i<8; i++) str_old[i] = ' ';
 }
 
 
@@ -108,56 +95,61 @@ void loop()
   alt = Baro.pressure2altitude(pressure);
   altRel = alt - altBase;
 
+  // generate and display formatted string for temp,
+  // but for speed only redisplay changed characters.
+  dtostrf(temp,5,1,str_new0);
+  for (int i=0; i<8; i++) {
+    if (str_new0[i] != str_old0[i]) {
+      OLED.write8x8Char(0, i*8, str_new0[i], Font8x8);
+    }  
+    str_old0[i] = str_new0[i]; // after loop finish make str_old0 the current str_new0
+  }
+
+  // generate and display formatted string for altRel,
+  // but for speed only redisplay changed characters.
+  dtostrf(altRel,8,1,str_new);
+  if (altRel >= 1000.0 ) {
+    // add a comma to seperate thousands eg 14,234.3
+    str_new[0]=str_new[1];
+    str_new[1]=str_new[2];
+    str_new[2]=','; 
+  }
+  for (int i=0; i<8; i++) {
+    uint16_t charOfs;
+    if (str_new[i] != str_old[i]) {
+      switch (str_new[i]) {
+        case '0': charOfs = 0x0000; break;
+        case '1': charOfs = 0x0030; break;
+        case '2': charOfs = 0x0060; break;
+        case '3': charOfs = 0x0090; break;
+        case '4': charOfs = 0x00C0; break;
+        case '5': charOfs = 0x00F0; break;
+        case '6': charOfs = 0x0120; break;
+        case '7': charOfs = 0x0150; break;
+        case '8': charOfs = 0x0180; break;
+        case '9': charOfs = 0x01B0; break;
+        case '-': charOfs = 0x01E0; break;
+        case ',': charOfs = 0x0210; break;
+        case '.': charOfs = 0x0240; break;
+        case ' ': charOfs = 0x0270; break;
+        default: charOfs = 0x0018;
+      }  
+      OLED.writeBlock(2, 16*i, 3, 16, charOfs, FontNums16x24);
+    }
+    str_old[i] = str_new[i]; // after loop finish make str_old the current str_new
+  }   
+
+
+
+  OLED.writeEND();
+
   Serial.print(temp);
   Serial.print(" ");
   Serial.print(alt);
   Serial.print(" ");
   Serial.println(altRel);
-  
-  // Display the data on the OLED screen
 
-#ifdef SMALL
-  uint8_t s = 18;
-  int i = 0;
-  int d = 100;
-  OLED.write8x8Char(0, i, 'H'); i=i+8; delay(d);
-  OLED.write8x8Char(0, i, 'e'); i=i+8; delay(d);
-  OLED.write8x8Char(0, i, 'l'); i=i+8; delay(d);
-  OLED.write8x8Char(0, i, 'l'); i=i+8; delay(d);
-  OLED.write8x8Char(0, i, 'o'); i=i+8; delay(d);
-  i = 0;
-  OLED.write8x8Char(1, i, 'L'); i=i+8; delay(d);
-  OLED.write8x8Char(1, i, 'e'); i=i+8; delay(d);
-  OLED.write8x8Char(1, i, 'e'); i=i+8; delay(d);
-  OLED.write8x8Char(1, i, '-'); i=i+8; delay(d);
-  OLED.write8x8Char(1, i, 'A'); i=i+8; delay(d);
-  OLED.write8x8Char(1, i, 'n'); i=i+8; delay(d);
-  OLED.write8x8Char(1, i, 'n'); i=i+8; delay(d);
-  OLED.write8x8Char(1, i, ' '); i=i+8; delay(d);
-  OLED.write8x8Char(1, i, '!'); i=i+8; delay(d);
-  OLED.write8x8Char(4, 0, 0x80);
-  OLED.write8x8Char(4, 10, 0x80);
-  OLED.write8x8Char(4, 20, 0x41);
-  OLED.write8x8Char(4, 30, 'A');
-  OLED.writeBlock(5, 0, 1, 8, 0x0000);
-  OLED.writeBlock(5, 8, 1, 8, 0x0008);
-  OLED.writeBlock(5, 16, 1, 8, 0x0010);
-  OLED.writeBlock(5, 24, 1, 8, 0x0018);
-  
-
-  OLED.writeEND();
-#else
-  display.gotoXY(0, 0);
-  strcpy(str1," ft");
-  dtostrf(altRel,7,1,str2);
-  strcat(str2,str1);
-  display.print(str2);
-  display.gotoXY(2, 2);
-  strcpy(str1," ft");
-  dtostrf(alt,5,0,str2);
-  strcat(str2,str1);
-  display.print(str2);
-#endif
-  
-  delay(200);
+//  delay(500);
 }
+
+

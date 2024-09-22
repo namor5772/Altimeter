@@ -9,11 +9,6 @@
 #define SH1106_SET_PAGE_ADDR 0xB0
 #define SH1106_SET_COM_SCAN_DIR 0xC0
 
-static inline uint8_t repeatBits(uint8_t d);
-
-class SH1106 {
-
-  public:
 /*  
  The module (in 4-wire SPI mode) has 7 pins (which on the Arduino PRO Mini with HW SPI use):
  1 GND - connect to ground pin on micro (Arduino Pro Mini 5V 16Mhz assumed here)
@@ -33,50 +28,41 @@ Note: The screen pixels are accessed in vertical bytes (least significant bit at
 8 pages (giving 64 = 8 x 8 bits), there are 128 visible columns, strangely ranging
 from 2 to 129.      
 */
-  SH1106(uint8_t clk, uint8_t mos, uint8_t res, uint8_t dc, uint8_t cs); // Constructor
+
+class SH1106 {
+
+  public:
+
+  // constructor - includes init()
+  SH1106(uint8_t clk, uint8_t mos, uint8_t res, uint8_t dc, uint8_t cs); 
 
   private:
   
   uint8_t clkPin, mosPin, resPin, dcPin, csPin;
-  bool initialized;
-  bool dataMode;
-  bool clearDisplayRamOnNextDisplay;
-  bool disableAutoDisplay;
-  static const uint8_t textBufferWidth = 21, textBufferHeight = 8;
-  uint8_t textBuffer[textBufferHeight * textBufferWidth];
-  uint8_t textCursorX;
-  uint8_t textCursorY;
-  const uint8_t * graphicsBuffer;
 
   // low level SPI comms with SH1106
-  void initPins();
-  void reset();
   void TransferStart();
-  void TransferEnd();
   void CommandMode();
   void DataMode();
   void Write(uint8_t d);
-  void init();
+  void TransferEnd();
+
+  // setup functions 
+  void init(); // just a wrapper for the following functions
+  void initPins();
+  void reset();
   void clearDisplayRam();
   void configureDefault();
-
-  void writeSegmentUpperText(uint8_t page, uint8_t columnAddr, const uint8_t * text, uint8_t textLength);
-  void writeSegmentLowerText(uint8_t page, uint8_t columnAddr, const uint8_t * text, uint8_t textLength);
-  uint8_t getGlyphColumn(uint8_t glyph, uint8_t pixelX);
-  uint8_t * getLinePointer(uint8_t line);
-
-  void display8x2Text(); // = displayFunction
-  void display8x2TextPartial(uint8_t x, uint8_t y, uint8_t width); // = displayPartialFunction 
-  void displayPartial(uint8_t x, uint8_t y, uint8_t width);
-  
 
   public:
 
   void invert();
-  void rotate180();
-  void gotoXY(uint8_t x, uint8_t y);
-  void writeBlock(uint8_t page, uint8_t col, uint8_t pages, uint8_t cols, uint16_t address);
-  void write8x8Char(uint8_t page, uint8_t column, uint16_t charCode);
+  void uninvert();
+  void writeBlock(uint8_t page, uint8_t col, uint8_t pages, uint8_t cols, uint16_t address, const uint8_t Arr[]);
+  void write8x8Char(uint8_t page, uint8_t column, uint16_t charCode, const uint8_t Arr[][8]);
   void writeEND();
+
+  void writeTest(const uint8_t Arr[]);
 };
+
 
