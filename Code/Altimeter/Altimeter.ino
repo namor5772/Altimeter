@@ -1,6 +1,9 @@
 #include "MS5637.h"
 #include "SH1106.h"
 #include "Display.h"
+#include <Adafruit_MAX1704X.h>
+
+Adafruit_MAX17048 lipo;
 
 /*************************************************************************************************
 Programming the Arduino PRO Mini using a duinothech USB to FTDI Serial Adatptor Module (XC-4464),
@@ -36,7 +39,11 @@ const int buttonPin = A0; // Pin connected to the push button (14)
 // other side of resistor connected to GND
 const int ledPin = A1; // LED pin (15) 
 
-float temp, pressure, altBase, alt, altRel;
+float temp, pressure, altBase, alt, altRel, cellPer, cellVol;
+char str_old2[17];
+char str_new2[17];
+char str_old1[17];
+char str_new1[17];
 char str_old0[17];
 char str_new0[17];
 char str_old[17];
@@ -45,6 +52,16 @@ char str_new[17];
 void setup()
 {
   Serial.begin(9600);
+  while (!Serial) delay (10);
+
+  Serial.println(F("\nAdafruit MAX17048 simple demo"));
+  if (!lipo.begin()) {
+    Serial.println(F("Couldn't find Adafruit MAX17048? Make sure a battery is plugged in!"));
+    while (1) delay(10);
+  }
+  Serial.print(F("Found MAX17048 with Chip ID: 0x"));
+  Serial.println(lipo.getChipID(), HEX);
+
 
   pinMode(buttonPin, INPUT_PULLUP); // set the button pin as input with internal pull-up resistor
   pinMode(ledPin, OUTPUT); // Set the LED pin as output
@@ -57,13 +74,55 @@ void setup()
   altBase = 0;
   Serial.println(altBase);
 
-  // initialise str_old, for its first use in loop()
-  for (int i=0; i<8; i++) str_old[i] = ' ';
+  // initialise str_old*, for its first use in loop()
+  for (int i=0; i<8; i++) {
+    str_old2[i] = ' ';
+    str_old1[i] = ' ';
+    str_old0[i] = ' ';
+    str_old[i] = ' ';
+  }  
 }
 
 
 void loop()
 {
+  cellVol = lipo.cellVoltage();
+  if (isnan(cellVol)) {
+    Serial.println("Failed to read cell voltage, check battery is connected!");
+    delay(2000);
+    return;
+  }
+
+  cellPer = lipo.cellPercent();
+  Serial.print(F("Batt Voltage: "));
+  Serial.print(cellVol, 3);
+  Serial.println(" V");
+  Serial.print(F("Batt Percent: "));
+  Serial.print(cellPer, 1);
+  Serial.println(" %");
+  Serial.println();
+
+  // generate and display formatted string for Battery Voltage cellVol,
+  // but for speed only redisplay changed characters.
+  dtostrf(cellVol,4,2,str_new1);
+  for (int i=0; i<4; i++) {
+    if (str_new1[i] != str_old1[i]) {
+      OLED.write8x8Char(0, (i+6)*8, str_new1[i], Font8x8);
+    }  
+    str_old1[i] = str_new1[i]; // after loop finish make str_old1 the current str_new1
+  }
+
+  // generate and display formatted string for Battery Percentage cellPer,
+  // but for speed only redisplay changed characters.
+  dtostrf(cellPer,5,1,str_new2);
+  for (int i=0; i<5; i++) {
+    if (str_new2[i] != str_old2[i]) {
+      OLED.write8x8Char(0, (i+11)*8, str_new2[i], Font8x8);
+    }  
+    str_old2[i] = str_new2[i]; // after loop finish make str_old1 the current str_new1
+  }
+
+
   // read the pushButton pin:
   int buttonState = digitalRead(buttonPin);
 
@@ -98,7 +157,7 @@ void loop()
   // generate and display formatted string for temp,
   // but for speed only redisplay changed characters.
   dtostrf(temp,5,1,str_new0);
-  for (int i=0; i<8; i++) {
+  for (int i=0; i<5; i++) {
     if (str_new0[i] != str_old0[i]) {
       OLED.write8x8Char(0, i*8, str_new0[i], Font8x8);
     }  
@@ -149,7 +208,7 @@ void loop()
   Serial.print(" ");
   Serial.println(altRel);
 
-//  delay(500);
+  delay(2000);
 }
 
 
