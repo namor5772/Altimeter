@@ -23,13 +23,13 @@ also pinout to using an Arduino Nano as FTDI serial adaptor:
 // The specified pins are: CLK, MOS, RES, DC, CS.
 SH1106 OLED(13, 11, 8, 9, 10);
 
-// An instance of the BaroSensorClass called Baro is created
+// An instance of the MS5637 called Baro is created
 // The module is I2C and has just 4 pins:
 // 1 GND - connect to ground pin on micro (Arduino Pro Mini 5V 16Mhz assumed here)
 // 2 SDA - connect to SDA pin on micro (also called D2)
 // 3 SCL - connect to SCL pin on micro (also called D3)
 // 4 VCC - connect to VCC pin on micro (assumed 5V)
-BaroSensorClass Baro;
+MS5637 Baro;
 
 // Pin connected to button, other side of button connected to GND
 // Pin set to INPUT_PULLUP (to not require external resistor)
@@ -66,7 +66,7 @@ void setup()
   pinMode(buttonPin, INPUT_PULLUP); // set the button pin as input with internal pull-up resistor
   pinMode(ledPin, OUTPUT); // Set the LED pin as output
 
-  // setup MS5637 sensor (An instance of the BaroSensorClass object BaroSensor has been constructed above)
+  // setup MS5637 sensor (An instance of the MS5637 object BaroSensor has been constructed above)
   Baro.begin();
   Baro.dumpDebugOutput();
   Baro.getTempAndPressure(&temp, &pressure);
@@ -104,20 +104,20 @@ void loop()
 
   // generate and display formatted string for Battery Voltage cellVol,
   // but for speed only redisplay changed characters.
-  dtostrf(cellVol,4,2,str_new1);
+  dtostrf(cellVol,3,1,str_new1); str_new1[3] = 'V';
   for (int i=0; i<4; i++) {
     if (str_new1[i] != str_old1[i]) {
-      OLED.write8x8Char(0, (i+6)*8, str_new1[i], Font8x8);
+      OLED.write8x8Char(0, (i+7)*8, str_new1[i], Font8x8);
     }  
     str_old1[i] = str_new1[i]; // after loop finish make str_old1 the current str_new1
   }
 
   // generate and display formatted string for Battery Percentage cellPer,
   // but for speed only redisplay changed characters.
-  dtostrf(cellPer,5,1,str_new2);
-  for (int i=0; i<5; i++) {
+  dtostrf(cellPer,3,0,str_new2); str_new2[3] = '%';
+  for (int i=0; i<4; i++) {
     if (str_new2[i] != str_old2[i]) {
-      OLED.write8x8Char(0, (i+11)*8, str_new2[i], Font8x8);
+      OLED.write8x8Char(0, (i+12)*8, str_new2[i], Font8x8);
     }  
     str_old2[i] = str_new2[i]; // after loop finish make str_old1 the current str_new1
   }
@@ -156,8 +156,8 @@ void loop()
 
   // generate and display formatted string for temp,
   // but for speed only redisplay changed characters.
-  dtostrf(temp,5,1,str_new0);
-  for (int i=0; i<5; i++) {
+  dtostrf(temp,5,1,str_new0); str_new0[5] = 0x00; // degree character
+  for (int i=0; i<6; i++) {
     if (str_new0[i] != str_old0[i]) {
       OLED.write8x8Char(0, i*8, str_new0[i], Font8x8);
     }  
@@ -193,7 +193,7 @@ void loop()
         case ' ': charOfs = 0x0270; break;
         default: charOfs = 0x0018;
       }  
-      OLED.writeBlock(2, 16*i, 3, 16, charOfs, FontNums16x24);
+      OLED.writeBlock(3, 16*i, 3, 16, charOfs, FontNums16x24);
     }
     str_old[i] = str_new[i]; // after loop finish make str_old the current str_new
   }   
@@ -208,7 +208,7 @@ void loop()
   Serial.print(" ");
   Serial.println(altRel);
 
-  delay(2000);
+  delay(100);
 }
 
 

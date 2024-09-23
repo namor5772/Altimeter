@@ -1,6 +1,6 @@
 #include "MS5637.h"
 
-void BaroSensorClass::begin() {
+void MS5637::begin() {
   Wire.begin();
   Wire.beginTransmission(BARO_ADDR);
   Wire.write(CMD_RESET);
@@ -25,7 +25,7 @@ void BaroSensorClass::begin() {
   initialised = true;
 }
 
-bool BaroSensorClass::getTempAndPressure(float *temperature, float *pressure, TempUnit tempScale, OSR level) {
+bool MS5637::getTempAndPressure(float *temperature, float *pressure, TempUnit tempScale, OSR level) {
   if(err || !initialised) return false;
   int32_t d2 = takeReading(CMD_START_D2(level), level);
   if(d2 == 0) return false;
@@ -79,7 +79,7 @@ bool BaroSensorClass::getTempAndPressure(float *temperature, float *pressure, Te
   return true;
 }
 
-uint32_t BaroSensorClass::takeReading(uint8_t trigger_cmd, OSR oversample_level)
+uint32_t MS5637::takeReading(uint8_t trigger_cmd, OSR oversample_level)
 {
   Wire.beginTransmission(BARO_ADDR);
   Wire.write(trigger_cmd);
@@ -98,7 +98,7 @@ uint32_t BaroSensorClass::takeReading(uint8_t trigger_cmd, OSR oversample_level)
   return result;
 }
 
-void BaroSensorClass::dumpDebugOutput()
+void MS5637::dumpDebugOutput()
 {
   Serial.print(F("C1 = 0x"));
   Serial.println(c1, HEX);
@@ -136,7 +136,7 @@ void BaroSensorClass::dumpDebugOutput()
   Serial.println(err);
 }
 
-float BaroSensorClass::pressure2altitude(float pressure)
+float MS5637::pressure2altitude(float pressure)
 {
   float altitude = 145366.45*(1-pow(pressure/1013.25,0.190284));
   return altitude;

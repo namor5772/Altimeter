@@ -29,9 +29,9 @@ const uint8_t SamplingDelayMs[6] PROGMEM = {2,4,6,10,18,34};
 #define ERR_NEEDS_BEGIN -3
 
 
-class BaroSensorClass {
+class MS5637 {
  public:
-  BaroSensorClass() : initialised(false), err(ERR_NEEDS_BEGIN) { }
+  MS5637() : initialised(false), err(ERR_NEEDS_BEGIN) { }
   void begin();
 
   /* Update both temperature and pressure together. This takes less
