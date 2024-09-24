@@ -1,11 +1,22 @@
 #include "Arduino.h"
 #include "SH1106.h"
+#include "Display2.h"
 
 // Constructor
 SH1106::SH1106(uint8_t clk, uint8_t mos, uint8_t res, uint8_t dc, uint8_t cs) {
   // set pin numbers
   clkPin = clk; mosPin = mos; resPin = res; dcPin = dc; csPin = cs;
   init();
+
+    // initialise str_old*, for its first use in loop()
+  for (int i=0; i<16; i++) {
+    str_old3[i] = ' ';
+    str_old2[i] = ' ';
+    str_old1[i] = ' ';
+//    str_old0[i] = ' ';
+//    str_old[i] = ' ';
+  }  
+
 } 
 
 void SH1106::TransferStart() {
@@ -124,19 +135,74 @@ void SH1106::writeBlock(uint8_t page, uint8_t col, uint8_t pages, uint8_t cols, 
   TransferEnd();
 }
 
+// generate and display formatted string for Battery Voltage cellVol,
+// but for speed only redisplay changed characters.
+void SH1106::BatteryVoltage(float cellVol, uint8_t page, uint8_t col) {
+  dtostrf(cellVol,3,1,str_new1); str_new1[3] = 'V';
+  for (int i=0; i<4; i++) {
+    if (str_new1[i] != str_old1[i]) write8x8Char(page, col+i*8, str_new1[i], Font8x8_);
+    str_old1[i] = str_new1[i]; // after loop finish make str_old1 the current str_new1
+  }
+}
 
+ // generate and display formatted string for Battery Percentage cellPer,
+ // but for speed only redisplay changed characters.
+void SH1106::BatteryPercentage(float cellPer_, uint8_t page, uint8_t col) {
+  dtostrf(cellPer_,3,0,str_new2); str_new2[3] = '%';
+  for (int i=0; i<4; i++) {
+    if (str_new2[i] != str_old2[i]) write8x8Char(page, col+i*8, str_new2[i], Font8x8_);
+    str_old2[i] = str_new2[i]; // after loop finish make str_old1 the current str_new1
+  }
+}  
 
-void SH1106::writeTest(const uint8_t Arr[]) {
-  uint8_t columnByte;
-  TransferStart();
-  CommandMode();
-  Write(SH1106_SET_PAGE_ADDR | 6);
-  Write(SH1106_SET_COLUMN_ADDR_HIGH | ((0 + 2) >> 4));
-  Write(SH1106_SET_COLUMN_ADDR_LOW | ((0 + 2) & 0xF));
-  DataMode();
-  columnByte = pgm_read_byte(&Arr[0]);
-  Write(columnByte);
-  TransferEnd();
+ // generate and display a graphic for Battery level,
+ // but for speed only redisplay changed bytes
+void SH1106::BatteryLevelGraphic(float cellPer_, uint8_t page, uint8_t col) {
+  float cp = cellPer_;
+
+  // Setup default full battery graphic
+  str_new3[0] = 0;
+  str_new3[1] = 1;
+  for (int i=2; i<12; i++) str_new3[i] = 5;
+  str_new3[12] = 1;
+  str_new3[13] = 0;
+  str_new3[14] = 6;
+  str_new3[15] = 6;
+
+  // number of whole 10%'s in cellPer
+  if (cp > 100.0) cp = 100.0;
+  if (cp < 0.0) cp = 0.0;
+
+  int full_Levels = (int)(cp/10.0);
+  float f = cp-(float)full_Levels*10.0;
+  if (f > 8.75) ++full_Levels;  
+  int blank_Levels = 10-full_Levels; 
+
+  // determine any full level 10% bars (possibly none)
+  for (int i=2; i<=full_Levels+1; i++) str_new3[i] = 5;
+
+  // determine the partial 10% bar if any (there is one or none)
+  if ((1.25 < f) && (f <= 8.75)) {
+    --blank_Levels;
+    if (f < 3.75) {
+      str_new3[full_Levels+2] = 2;
+    } else if (f < 6.25) {
+      str_new3[full_Levels+2] = 3;
+    } else if (f <= 8.75) {
+      str_new3[full_Levels+2] = 4;
+    } else {
+      str_new3[full_Levels+2] = 5;
+    }
+  }
+
+  // determine any empty 10% bars (possibly none)
+  for (int i=12-blank_Levels; i<=11; i++) str_new3[i] = 1;
+
+  // display surrounds and all 10 10% bars (as determined above)
+  for (int i=0; i<16; i++) {
+    if (str_new3[i] != str_old3[i]) writeBlock(page, col+i, 1, 1, str_new3[i], Battery_);
+    str_old3[i] = str_new3[i]; // after loop finish make str_old1 the current str_new1
+  }
 }
 
 // displays an 8x8 char at specified page and column position,

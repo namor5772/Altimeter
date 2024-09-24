@@ -32,6 +32,7 @@ const uint8_t SamplingDelayMs[6] PROGMEM = {2,4,6,10,18,34};
 class MS5637 {
  public:
   MS5637() : initialised(false), err(ERR_NEEDS_BEGIN) { }
+  
   void begin();
 
   /* Update both temperature and pressure together. This takes less

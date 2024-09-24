@@ -83,17 +83,21 @@ uint32_t MS5637::takeReading(uint8_t trigger_cmd, OSR oversample_level)
 {
   Wire.beginTransmission(BARO_ADDR);
   Wire.write(trigger_cmd);
+//  Wire.endTransmission(true);
   if((err = Wire.endTransmission(true))) return 0;
   uint8_t sampling_delay = pgm_read_byte(SamplingDelayMs + (int)oversample_level);
   delay(sampling_delay);
 
   Wire.beginTransmission(BARO_ADDR);
   Wire.write(CMD_READ_ADC);
+//  Wire.endTransmission(true);
   if((err = Wire.endTransmission(false))) return 0;
     
   int req = Wire.requestFrom(BARO_ADDR, 3);
   if(req != 3) req = Wire.requestFrom(BARO_ADDR, 3); // Sometimes first read fails...?
   if(req != 3) {err = ERR_BAD_READLEN; return 0;}
+
+//  Wire.requestFrom(BARO_ADDR, 3, true);
   uint32_t result = ((uint32_t)Wire.read() << 16) | ((uint32_t)Wire.read() << 8) | Wire.read();
   return result;
 }

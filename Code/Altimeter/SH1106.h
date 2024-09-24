@@ -40,6 +40,11 @@ class SH1106 {
   
   uint8_t clkPin, mosPin, resPin, dcPin, csPin;
 
+  // specific char arrays used when displaying text on OLED
+  char str_old3[17]; char str_new3[17];
+  char str_old2[17]; char str_new2[17];
+  char str_old1[17]; char str_new1[17];
+
   // low level SPI comms with SH1106
   void TransferStart();
   void CommandMode();
@@ -60,9 +65,10 @@ class SH1106 {
   void uninvert();
   void writeBlock(uint8_t page, uint8_t col, uint8_t pages, uint8_t cols, uint16_t address, const uint8_t Arr[]);
   void write8x8Char(uint8_t page, uint8_t column, uint16_t charCode, const uint8_t Arr[][8]);
+  void BatteryVoltage(float cellVol, uint8_t page, uint8_t col);
+  void BatteryPercentage(float cellPer, uint8_t page, uint8_t col);
+  void BatteryLevelGraphic(float cellPer, uint8_t page, uint8_t col);
   void writeEND();
-
-  void writeTest(const uint8_t Arr[]);
 };
 
 

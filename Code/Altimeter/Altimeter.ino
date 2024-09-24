@@ -23,13 +23,13 @@ also pinout to using an Arduino Nano as FTDI serial adaptor:
 // The specified pins are: CLK, MOS, RES, DC, CS.
 SH1106 OLED(13, 11, 8, 9, 10);
 
-// An instance of the MS5637 called Baro is created
+// An instance of the MS5637 called BARO is created
 // The module is I2C and has just 4 pins:
 // 1 GND - connect to ground pin on micro (Arduino Pro Mini 5V 16Mhz assumed here)
 // 2 SDA - connect to SDA pin on micro (also called D2)
 // 3 SCL - connect to SCL pin on micro (also called D3)
 // 4 VCC - connect to VCC pin on micro (assumed 5V)
-MS5637 Baro;
+MS5637 BARO;
 
 // Pin connected to button, other side of button connected to GND
 // Pin set to INPUT_PULLUP (to not require external resistor)
@@ -39,15 +39,13 @@ const int buttonPin = A0; // Pin connected to the push button (14)
 // other side of resistor connected to GND
 const int ledPin = A1; // LED pin (15) 
 
+// global variables
 float temp, pressure, altBase, alt, altRel, cellPer, cellVol;
-char str_old2[17];
-char str_new2[17];
-char str_old1[17];
-char str_new1[17];
-char str_old0[17];
-char str_new0[17];
-char str_old[17];
-char str_new[17];
+//char str_old3[17]; char str_new3[17];
+//char str_old2[17]; char str_new2[17];
+//char str_old1[17]; char str_new1[17];
+char str_old0[17]; char str_new0[17];
+char str_old[17]; char str_new[17];
 
 void setup()
 {
@@ -66,18 +64,19 @@ void setup()
   pinMode(buttonPin, INPUT_PULLUP); // set the button pin as input with internal pull-up resistor
   pinMode(ledPin, OUTPUT); // Set the LED pin as output
 
-  // setup MS5637 sensor (An instance of the MS5637 object BaroSensor has been constructed above)
-  Baro.begin();
-  Baro.dumpDebugOutput();
-  Baro.getTempAndPressure(&temp, &pressure);
-  //altBase = BaroSensor.pressure2altitude(pressure);
+  // setup MS5637 sensor (An instance of the MS5637 object BARO has been constructed above)
+  BARO.begin();
+  BARO.dumpDebugOutput();
+  BARO.getTempAndPressure(&temp, &pressure);
+  //altBase = BAROSensor.pressure2altitude(pressure);
   altBase = 0;
   Serial.println(altBase);
 
   // initialise str_old*, for its first use in loop()
-  for (int i=0; i<8; i++) {
-    str_old2[i] = ' ';
-    str_old1[i] = ' ';
+  for (int i=0; i<16; i++) {
+//    str_old3[i] = ' ';
+//    str_old2[i] = ' ';
+//    str_old1[i] = ' ';
     str_old0[i] = ' ';
     str_old[i] = ' ';
   }  
@@ -92,46 +91,20 @@ void loop()
     delay(2000);
     return;
   }
-
   cellPer = lipo.cellPercent();
-  Serial.print(F("Batt Voltage: "));
-  Serial.print(cellVol, 3);
-  Serial.println(" V");
-  Serial.print(F("Batt Percent: "));
-  Serial.print(cellPer, 1);
-  Serial.println(" %");
-  Serial.println();
-
-  // generate and display formatted string for Battery Voltage cellVol,
-  // but for speed only redisplay changed characters.
-  dtostrf(cellVol,3,1,str_new1); str_new1[3] = 'V';
-  for (int i=0; i<4; i++) {
-    if (str_new1[i] != str_old1[i]) {
-      OLED.write8x8Char(0, (i+7)*8, str_new1[i], Font8x8);
-    }  
-    str_old1[i] = str_new1[i]; // after loop finish make str_old1 the current str_new1
-  }
-
-  // generate and display formatted string for Battery Percentage cellPer,
-  // but for speed only redisplay changed characters.
-  dtostrf(cellPer,3,0,str_new2); str_new2[3] = '%';
-  for (int i=0; i<4; i++) {
-    if (str_new2[i] != str_old2[i]) {
-      OLED.write8x8Char(0, (i+12)*8, str_new2[i], Font8x8);
-    }  
-    str_old2[i] = str_new2[i]; // after loop finish make str_old1 the current str_new1
-  }
-
+  OLED.BatteryVoltage(cellVol, 0, 70);
+  OLED.BatteryPercentage(cellPer, 7, 96);
+  OLED.BatteryLevelGraphic(cellPer, 0, 112);
 
   // read the pushButton pin:
   int buttonState = digitalRead(buttonPin);
 
-  if (!Baro.isOK()) {
+  if (!BARO.isOK()) {
     // Try to reinitialise the sensor if we can
-    Baro.begin();
+    BARO.begin();
 
     // measure temperature and pressure
-    Baro.getTempAndPressure(&temp, &pressure);
+    BARO.getTempAndPressure(&temp, &pressure);
   }
   else if (buttonState==LOW) { // button is pressed
     // Turn on the LED
@@ -139,19 +112,19 @@ void loop()
     Serial.println("Button pressed!");
 
     // measure temperature and pressure and zero the altimeter
-    Baro.getTempAndPressure(&temp, &pressure);
-    altBase = Baro.pressure2altitude(pressure);
+    BARO.getTempAndPressure(&temp, &pressure);
+    altBase = BARO.pressure2altitude(pressure);
   }
   else { // button is not pressed
     // Turn off the LED
     digitalWrite(ledPin, LOW);
 
     // measure temperature and pressure
-    Baro.getTempAndPressure(&temp, &pressure);
+    BARO.getTempAndPressure(&temp, &pressure);
   }
 
   // Calculates the altitude after zeroing
-  alt = Baro.pressure2altitude(pressure);
+  alt = BARO.pressure2altitude(pressure);
   altRel = alt - altBase;
 
   // generate and display formatted string for temp,
@@ -193,7 +166,7 @@ void loop()
         case ' ': charOfs = 0x0270; break;
         default: charOfs = 0x0018;
       }  
-      OLED.writeBlock(3, 16*i, 3, 16, charOfs, FontNums16x24);
+      OLED.writeBlock(2, 16*i, 3, 16, charOfs, FontNums16x24);
     }
     str_old[i] = str_new[i]; // after loop finish make str_old the current str_new
   }   
