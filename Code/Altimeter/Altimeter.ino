@@ -31,31 +31,30 @@ SH1106 OLED(13, 11, 8, 9, 10);
 // 4 VCC - connect to VCC pin on micro (assumed 5V)
 MS5637 BARO;
 
-// Pin connected to button, other side of button connected to GND
+// Pin connected to push button (14) , other side of button connected to GND
 // Pin set to INPUT_PULLUP (to not require external resistor)
-const int buttonPin = A0; // Pin connected to the push button (14)
+const int buttonPin = A0;
 
-// Pin connected to red LED Anode (long+), LED Cathode(short-) connected to 220 R resistor,
+// Pin (15) connected to red LED Anode (long+) , LED Cathode(short-) connected to 220 R resistor,
 // other side of resistor connected to GND
-const int ledPin = A1; // LED pin (15) 
+const int ledPin = A1;
+
+ // Pin connected to the 5V level of the lipo charging board (16)
+const int chargePin = A2;
 
 // global variables
 float temp, pressure, altBase, alt, altRel, cellPer, cellVol;
-//char str_old3[17]; char str_new3[17];
-//char str_old2[17]; char str_new2[17];
-//char str_old1[17]; char str_new1[17];
-char str_old0[17]; char str_new0[17];
+//char str_old0[17]; char str_new0[17];
 char str_old[17]; char str_new[17];
 
 void setup()
 {
   Serial.begin(9600);
-  while (!Serial) delay (10);
-
-  Serial.println(F("\nAdafruit MAX17048 simple demo"));
-  if (!lipo.begin()) {
+  
+  while(!lipo.begin()) {
     Serial.println(F("Couldn't find Adafruit MAX17048? Make sure a battery is plugged in!"));
-    while (1) delay(10);
+    OLED.BatteryErrorGraphic(0, 112);
+    delay(5000);
   }
   Serial.print(F("Found MAX17048 with Chip ID: 0x"));
   Serial.println(lipo.getChipID(), HEX);
@@ -63,6 +62,7 @@ void setup()
 
   pinMode(buttonPin, INPUT_PULLUP); // set the button pin as input with internal pull-up resistor
   pinMode(ledPin, OUTPUT); // Set the LED pin as output
+  pinMode(chargePin, INPUT); // set the button pin as input with no internal pull-up resistor
 
   // setup MS5637 sensor (An instance of the MS5637 object BARO has been constructed above)
   BARO.begin();
@@ -77,7 +77,7 @@ void setup()
 //    str_old3[i] = ' ';
 //    str_old2[i] = ' ';
 //    str_old1[i] = ' ';
-    str_old0[i] = ' ';
+//    str_old0[i] = ' ';
     str_old[i] = ' ';
   }  
 }
@@ -88,54 +88,45 @@ void loop()
   cellVol = lipo.cellVoltage();
   if (isnan(cellVol)) {
     Serial.println("Failed to read cell voltage, check battery is connected!");
+    OLED.BatteryErrorGraphic(0, 112);
     delay(2000);
     return;
   }
   cellPer = lipo.cellPercent();
-  OLED.BatteryVoltage(cellVol, 0, 70);
-  OLED.BatteryPercentage(cellPer, 7, 96);
-  OLED.BatteryLevelGraphic(cellPer, 0, 112);
+  OLED.BatteryVoltage(cellVol, 0, 48);
+  OLED.BatteryPercentage(cellPer, 0, 88);
+  int chargeState = digitalRead(chargePin);
+  bool charging = (chargeState==HIGH);
+  OLED.BatteryLevelGraphic(cellPer, 0, 112, charging);
 
   // read the pushButton pin:
   int buttonState = digitalRead(buttonPin);
 
   if (!BARO.isOK()) {
-    // Try to reinitialise the sensor if we can
+    // Try to reinitialise the sensor if we can and measure temperature and pressure
     BARO.begin();
-
-    // measure temperature and pressure
     BARO.getTempAndPressure(&temp, &pressure);
   }
   else if (buttonState==LOW) { // button is pressed
-    // Turn on the LED
+    // Turn on the LED measure temperature and pressure and zero the altimeter
     digitalWrite(ledPin, HIGH);
     Serial.println("Button pressed!");
-
-    // measure temperature and pressure and zero the altimeter
     BARO.getTempAndPressure(&temp, &pressure);
     altBase = BARO.pressure2altitude(pressure);
   }
   else { // button is not pressed
-    // Turn off the LED
+    // Turn off the LED and measure temperature and pressure
     digitalWrite(ledPin, LOW);
-
-    // measure temperature and pressure
     BARO.getTempAndPressure(&temp, &pressure);
   }
 
-  // Calculates the altitude after zeroing
+  // Calculates the altitude (altRel) after zeroing
   alt = BARO.pressure2altitude(pressure);
-  altRel = alt - altBase;
+  altRel = alt - altBase+13000;
 
-  // generate and display formatted string for temp,
-  // but for speed only redisplay changed characters.
-  dtostrf(temp,5,1,str_new0); str_new0[5] = 0x00; // degree character
-  for (int i=0; i<6; i++) {
-    if (str_new0[i] != str_old0[i]) {
-      OLED.write8x8Char(0, i*8, str_new0[i], Font8x8);
-    }  
-    str_old0[i] = str_new0[i]; // after loop finish make str_old0 the current str_new0
-  }
+  // display current temperature measured by the MS5637 (and used to
+  // improve calculation of air pressure)
+  OLED.Temperature(temp, 0, 0);
 
   // generate and display formatted string for altRel,
   // but for speed only redisplay changed characters.
@@ -171,6 +162,7 @@ void loop()
     str_old[i] = str_new[i]; // after loop finish make str_old the current str_new
   }   
 
+ OLED.writeBlock(2, 0, 6, 32, 0x0000, FontNums32x48);
 
 
   OLED.writeEND();
