@@ -1,6 +1,5 @@
 #include "MS5637.h"
 #include "SH1106.h"
-#include "Display.h"
 #include <Adafruit_MAX1704X.h>
 
 Adafruit_MAX17048 lipo;
@@ -45,7 +44,7 @@ const int chargePin = A2;
 // global variables
 float temp, pressure, altBase, alt, altRel, cellPer, cellVol;
 //char str_old0[17]; char str_new0[17];
-char str_old[17]; char str_new[17];
+//char str_old[17]; char str_new[17];
 
 void setup()
 {
@@ -62,7 +61,7 @@ void setup()
 
   pinMode(buttonPin, INPUT_PULLUP); // set the button pin as input with internal pull-up resistor
   pinMode(ledPin, OUTPUT); // Set the LED pin as output
-  pinMode(chargePin, INPUT); // set the button pin as input with no internal pull-up resistor
+  pinMode(chargePin, INPUT); // set the button pin as input (there are some floating problems?)
 
   // setup MS5637 sensor (An instance of the MS5637 object BARO has been constructed above)
   BARO.begin();
@@ -71,15 +70,6 @@ void setup()
   //altBase = BAROSensor.pressure2altitude(pressure);
   altBase = 0;
   Serial.println(altBase);
-
-  // initialise str_old*, for its first use in loop()
-  for (int i=0; i<16; i++) {
-//    str_old3[i] = ' ';
-//    str_old2[i] = ' ';
-//    str_old1[i] = ' ';
-//    str_old0[i] = ' ';
-    str_old[i] = ' ';
-  }  
 }
 
 
@@ -122,47 +112,20 @@ void loop()
 
   // Calculates the altitude (altRel) after zeroing
   alt = BARO.pressure2altitude(pressure);
-  altRel = alt - altBase+13000;
+  altRel = alt - altBase;
 
   // display current temperature measured by the MS5637 (and used to
   // improve calculation of air pressure)
   OLED.Temperature(temp, 0, 0);
 
-  // generate and display formatted string for altRel,
-  // but for speed only redisplay changed characters.
-  dtostrf(altRel,8,1,str_new);
-  if (altRel >= 1000.0 ) {
-    // add a comma to seperate thousands eg 14,234.3
-    str_new[0]=str_new[1];
-    str_new[1]=str_new[2];
-    str_new[2]=','; 
-  }
-  for (int i=0; i<8; i++) {
-    uint16_t charOfs;
-    if (str_new[i] != str_old[i]) {
-      switch (str_new[i]) {
-        case '0': charOfs = 0x0000; break;
-        case '1': charOfs = 0x0030; break;
-        case '2': charOfs = 0x0060; break;
-        case '3': charOfs = 0x0090; break;
-        case '4': charOfs = 0x00C0; break;
-        case '5': charOfs = 0x00F0; break;
-        case '6': charOfs = 0x0120; break;
-        case '7': charOfs = 0x0150; break;
-        case '8': charOfs = 0x0180; break;
-        case '9': charOfs = 0x01B0; break;
-        case '-': charOfs = 0x01E0; break;
-        case ',': charOfs = 0x0210; break;
-        case '.': charOfs = 0x0240; break;
-        case ' ': charOfs = 0x0270; break;
-        default: charOfs = 0x0018;
-      }  
-      OLED.writeBlock(2, 16*i, 3, 16, charOfs, FontNums16x24);
-    }
-    str_old[i] = str_new[i]; // after loop finish make str_old the current str_new
-  }   
-
- OLED.writeBlock(2, 0, 6, 32, 0x0000, FontNums32x48);
+  // display current altitudete (adjusted to ground) measured by the MS5637
+//  OLED.Altitude_smallfont(altRel, 2, 0);
+  
+  OLED.Altitude_largefont(altRel);
+  
+  
+  
+ // OLED.writeBlock(2, 0, 6, 32, 0x0000, FontNums32x48);
 
 
   OLED.writeEND();

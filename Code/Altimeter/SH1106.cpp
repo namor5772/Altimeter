@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include "SH1106.h"
-#include "Display2.h"
+#include "Display.h"
 
 // Constructor
 SH1106::SH1106(uint8_t clk, uint8_t mos, uint8_t res, uint8_t dc, uint8_t cs) {
@@ -10,11 +10,12 @@ SH1106::SH1106(uint8_t clk, uint8_t mos, uint8_t res, uint8_t dc, uint8_t cs) {
 
     // initialise str_old*, for its first use in loop()
   for (int i=0; i<16; i++) {
+    str_old4[i] = ' ';
     str_old3[i] = ' ';
     str_old2[i] = ' ';
     str_old1[i] = ' ';
     str_old0[i] = ' ';
-//    str_old[i] = ' ';
+    str_old[i] = ' ';
   }  
 } 
 
@@ -285,7 +286,75 @@ void SH1106::Temperature(float temp_, uint8_t page, uint8_t col) {
   }
 }
 
+// generate and display formatted string for altitude,
+// 3 pages (24 bits) high, In feet, 1 dp, can change position.
+// but for speed only redisplay changed characters.
+void SH1106::Altitude_smallfont(float altitude, uint8_t page, uint8_t col) {
+  dtostrf(altitude,8,1,str_new);
+  if (altitude >= 1000.0) {
+    // add a comma to seperate thousands eg 14,234.3
+    str_new[0]=str_new[1];
+    str_new[1]=str_new[2];
+    str_new[2]=','; 
+  }
+  for (int i=0; i<8; i++) {
+    uint16_t charOfs;
+    if (str_new[i] != str_old[i]) {
+      writeBlock(page, col+16*i, 3, 16,  ASCII2offset(str_new[i], 0x0030), FontNums16x24_);
+    }
+    str_old[i] = str_new[i]; // after loop finish make str_old the current str_new
+  }
+}     
 
+
+// generate and display formatted string for altitude,
+// 6 pages (48 bits) high, in thousands of whole feet, fixed position.
+// but for speed only redisplay changed characters.
+void SH1106::Altitude_largefont(float altitude) {
+  bool neg = (altitude < 0);
+  if (neg) altitude = -1.0*altitude;
+  dtostrf(altitude,5,0,str_new4);
+  if (altitude < 10000.0) str_new4[0] = ' ';
+  if (altitude < 1000.0) str_new4[1] = '0';
+  if (altitude < 100.0) str_new4[2] = '0';
+  if (altitude < 10.0) str_new4[3] = '0';
+
+  // display first 3 digits of altitude (eg 134 of 13456) in biggest font
+  if (str_new4[0] != str_old4[0]) writeBlock(2, 32*0, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
+  if (str_new4[1] != str_old4[1]) writeBlock(2, 32*1, 6, 32, ASCII2offset(str_new4[1], 0x00C0), FontNums32x48_);
+  if (str_new4[2] != str_old4[2]) writeBlock(2, 32*2, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
+
+  // display last 2 digits of altitude (eg 56 of 13456) in small font
+  if (str_new4[3] != str_old4[3]) writeBlock(5, 32*3, 3, 16, ASCII2offset(str_new4[3], 0x0030), FontNums16x24_);
+  if (str_new4[4] != str_old4[4]) writeBlock(5, 32*3+16, 3, 16, ASCII2offset(str_new4[4], 0x0030), FontNums16x24_);
+}
+
+
+
+// a private utility function that maps numbers 'only' font chars to memmory offsets
+// in font bitmap arrays, needs offsetScale argument to make if useful for different size fonts
+// eg. FontNums32x48_ needs offsetScale=192, while FontNums16x24_ needs offsetScale=48
+uint16_t SH1106::ASCII2offset(char char_, uint16_t offsetScale) {
+  uint16_t charOfs;
+  switch (char_) {
+    case '0': charOfs = 0; break;
+    case '1': charOfs = 1; break;
+    case '2': charOfs = 2; break;
+    case '3': charOfs = 3; break;
+    case '4': charOfs = 4; break;
+    case '5': charOfs = 5; break;
+    case '6': charOfs = 6; break;
+    case '7': charOfs = 7; break;
+    case '8': charOfs = 8; break;
+    case '9': charOfs = 9; break;
+    case ' ': charOfs = 10; break;
+    case '-': charOfs = 11; break;
+    case ',': charOfs = 12; break;
+    case '.': charOfs = 13; break;
+    default: charOfs = 11;
+  };
+  return charOfs*offsetScale;
+} 
 
 
 // After writing to screen need to call this to stop cursor?
