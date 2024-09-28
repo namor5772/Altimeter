@@ -8,7 +8,8 @@ SH1106::SH1106(uint8_t clk, uint8_t mos, uint8_t res, uint8_t dc, uint8_t cs) {
   clkPin = clk; mosPin = mos; resPin = res; dcPin = dc; csPin = cs;
   init();
 
-    // initialise str_old*, for its first use in loop()
+  // initialise str_old*, for its first use in loop(),
+  // size is enough to store 16 characters, but often less is used.
   for (int i=0; i<16; i++) {
     str_old4[i] = ' ';
     str_old3[i] = ' ';
@@ -314,20 +315,100 @@ void SH1106::Altitude_largefont(float altitude) {
   bool neg = (altitude < 0);
   if (neg) altitude = -1.0*altitude;
   dtostrf(altitude,5,0,str_new4);
+  /*
   if (altitude < 10000.0) str_new4[0] = ' ';
   if (altitude < 1000.0) str_new4[1] = '0';
-  if (altitude < 100.0) str_new4[2] = '0';
-  if (altitude < 10.0) str_new4[3] = '0';
+  if (altitude < 100.0) {str_new4[2] = ' '; str_new4[1] = ' '; str_new4[6] = ' ';};
+  if (altitude < 10.0) str_new4[3] = ' ';
+  */
+
+  // display point sign if necessary
+//  write8x8Char(4, 32*2+8, str_new4[6], Font8x8_);
 
   // display first 3 digits of altitude (eg 134 of 13456) in biggest font
-  if (str_new4[0] != str_old4[0]) writeBlock(2, 32*0, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
-  if (str_new4[1] != str_old4[1]) writeBlock(2, 32*1, 6, 32, ASCII2offset(str_new4[1], 0x00C0), FontNums32x48_);
-  if (str_new4[2] != str_old4[2]) writeBlock(2, 32*2, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
+/*  
+  if (str_new4[0] != str_old4[0]) writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
+  if (str_new4[1] != str_old4[1]) writeBlock(2, 32*1+8, 6, 32, ASCII2offset(str_new4[1], 0x00C0), FontNums32x48_);
+  if (str_new4[2] != str_old4[2]) writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
+*/
 
+  if (altitude >= 10000.0) {
+    if (neg) 
+      write8x8Char(4, 32*0, 22, Font8x8_); // thick negative =22
+    else
+      write8x8Char(4, 32*0, ' ', Font8x8_);
+    writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
+    writeBlock(2, 32*1+8, 6, 32, ASCII2offset(str_new4[1], 0x00C0), FontNums32x48_);
+    write8x8Char(5, 32*2+8, 7, Font8x8_); // thousands decimal point (big)
+    writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
+    write8x8Char(7, 128-16, str_new4[3], Font8x8_); 
+    write8x8Char(7, 128-8, str_new4[4], Font8x8_); 
+  } else if (altitude >=1000.0) {
+    write8x8Char(4, 32*0, ' ', Font8x8_);
+    
+    writeBlock(2, 32*1+8, 6, 32, ASCII2offset(str_new4[1], 0x00C0), FontNums32x48_);
+    write8x8Char(5, 32*2+8, 7, Font8x8_); // thousands decimal point (big)
+    writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
+    if (neg) 
+      write8x8Char(4, 32*1, 22, Font8x8_); // thick negative =22
+    else 
+      writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
+    write8x8Char(7, 128-16, str_new4[3], Font8x8_); 
+    write8x8Char(7, 128-8, str_new4[4], Font8x8_); 
+  } else if (altitude >=100.0) {
+    writeBlock(2, 32*1+8, 6, 32, ASCII2offset('0', 0x00C0), FontNums32x48_);
+    write8x8Char(5, 32*2+8, 7, Font8x8_); // thousands decimal point (big)
+    writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
+    if (neg) 
+      write8x8Char(4, 32*1, 22, Font8x8_); // thick negative =22
+    else 
+      writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
+    write8x8Char(7, 128-16, str_new4[3], Font8x8_); 
+    write8x8Char(7, 128-8, str_new4[4], Font8x8_); 
+  } else if (altitude >=10.0) {
+    writeBlock(2, 32*0+8, 6, 32, ASCII2offset(' ', 0x00C0), FontNums32x48_);
+    writeBlock(2, 32*1+8, 6, 32, ASCII2offset(' ', 0x00C0), FontNums32x48_);
+    write8x8Char(5, 32*2+8, 7, Font8x8_); // thousands decimal point (big)
+    writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
+    if (neg) 
+      write8x8Char(4, 32*1, 22, Font8x8_); // thick negative =22
+    else 
+      writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
+    write8x8Char(7, 128-16, str_new4[3], Font8x8_); 
+    write8x8Char(7, 128-8, str_new4[4], Font8x8_); 
+  }
+
+
+
+
+/*
   // display last 2 digits of altitude (eg 56 of 13456) in small font
-  if (str_new4[3] != str_old4[3]) writeBlock(5, 32*3, 3, 16, ASCII2offset(str_new4[3], 0x0030), FontNums16x24_);
-  if (str_new4[4] != str_old4[4]) writeBlock(5, 32*3+16, 3, 16, ASCII2offset(str_new4[4], 0x0030), FontNums16x24_);
+  // include small minus sign if necessary.  
+  if ((altitude < 10.0) && neg) 
+    write8x8Char(7, 128-16, '-', Font8x8_); 
+  else if (altitude < 10.0) 
+    write8x8Char(7, 128-16, ' ', Font8x8_);
+  write8x8Char(7, 128-8, str_new4[4], Font8x8_);
+
+
+  if ((altitude < 100.0) && (altitude >= 10.0) && neg)
+    write8x8Char(7, 128-24, '-', Font8x8_); 
+  else if ((altitude < 100.0) && (altitude >= 10.0))
+    write8x8Char(7, 128-24, ' ', Font8x8_); 
+  write8x8Char(7, 128-16, str_new4[3], Font8x8_);
+
+  if (altitude >= 100.0) {
+    write8x8Char(7, 128-16, str_new4[3], Font8x8_);
+    if ((altitude < 10000.0) && neg)  write8x8Char(7, 32, '-', Font8x8_);
+    else if ((altitude >= 10000.0) && neg) write8x8Char(7, 0, '-', Font8x8_);
+  }
+  write8x8Char(7, 128-8, str_new4[4], Font8x8_);
+
+  // after loop finish make str_old4 the current str_new4
+  for (int i=0; i<7; i++) str_old4[i] = str_new4[i]; 
+*/  
 }
+
 
 
 
