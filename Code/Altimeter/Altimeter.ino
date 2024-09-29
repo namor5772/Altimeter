@@ -112,7 +112,7 @@ void loop()
 
   // Calculates the altitude (altRel) after zeroing
   alt = BARO.pressure2altitude(pressure);
-  altRel = alt - altBase -998.0;
+  altRel = alt - altBase;
 
   // display current temperature measured by the MS5637 (and used to
   // improve calculation of air pressure)

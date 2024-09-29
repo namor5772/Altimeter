@@ -40,7 +40,8 @@ class SH1106 {
   uint8_t clkPin, mosPin, resPin, dcPin, csPin;
 
   // specific char arrays used when displaying text on OLED
-  char str_old4[17]; char str_new4[17];
+  char sbo[17]; char sb[17];
+  char str_old4[17]; char str_new4[17]; 
   char str_old3[17]; char str_new3[17];
   char str_old2[17]; char str_new2[17];
   char str_old1[17]; char str_new1[17];

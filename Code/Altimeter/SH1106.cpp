@@ -11,6 +11,7 @@ SH1106::SH1106(uint8_t clk, uint8_t mos, uint8_t res, uint8_t dc, uint8_t cs) {
   // initialise str_old*, for its first use in loop(),
   // size is enough to store 16 characters, but often less is used.
   for (int i=0; i<16; i++) {
+    sbo[i] = ' ';
     str_old4[i] = ' ';
     str_old3[i] = ' ';
     str_old2[i] = ' ';
@@ -312,104 +313,99 @@ void SH1106::Altitude_smallfont(float altitude, uint8_t page, uint8_t col) {
 // 6 pages (48 bits) high, in thousands of whole feet, fixed position.
 // but for speed only redisplay changed characters.
 void SH1106::Altitude_largefont(float altitude) {
+  char str[17];  
   bool neg = (altitude < 0);
   if (neg) altitude = -1.0*altitude;
-  dtostrf(altitude,5,0,str_new4);
-  /*
-  if (altitude < 10000.0) str_new4[0] = ' ';
-  if (altitude < 1000.0) str_new4[1] = '0';
-  if (altitude < 100.0) {str_new4[2] = ' '; str_new4[1] = ' '; str_new4[6] = ' ';};
-  if (altitude < 10.0) str_new4[3] = ' ';
-  */
-
-  // display point sign if necessary
-//  write8x8Char(4, 32*2+8, str_new4[6], Font8x8_);
-
-  // display first 3 digits of altitude (eg 134 of 13456) in biggest font
-/*  
-  if (str_new4[0] != str_old4[0]) writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
-  if (str_new4[1] != str_old4[1]) writeBlock(2, 32*1+8, 6, 32, ASCII2offset(str_new4[1], 0x00C0), FontNums32x48_);
-  if (str_new4[2] != str_old4[2]) writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
-*/
+  dtostrf(altitude,5,0,str);
 
   if (altitude >= 10000.0) {
-    if (neg) 
-      write8x8Char(4, 32*0, 22, Font8x8_); // thick negative =22
-    else
-      write8x8Char(4, 32*0, ' ', Font8x8_);
-    writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
-    writeBlock(2, 32*1+8, 6, 32, ASCII2offset(str_new4[1], 0x00C0), FontNums32x48_);
-    write8x8Char(5, 32*2+8, 7, Font8x8_); // thousands decimal point (big)
-    writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
-    write8x8Char(7, 128-16, str_new4[3], Font8x8_); 
-    write8x8Char(7, 128-8, str_new4[4], Font8x8_); 
-  } else if (altitude >=1000.0) {
-    write8x8Char(4, 32*0, ' ', Font8x8_);
-    
-    writeBlock(2, 32*1+8, 6, 32, ASCII2offset(str_new4[1], 0x00C0), FontNums32x48_);
-    write8x8Char(5, 32*2+8, 7, Font8x8_); // thousands decimal point (big)
-    writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
-    if (neg) 
-      write8x8Char(4, 32*1, 22, Font8x8_); // thick negative =22
-    else 
-      writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
-    write8x8Char(7, 128-16, str_new4[3], Font8x8_); 
-    write8x8Char(7, 128-8, str_new4[4], Font8x8_); 
-  } else if (altitude >=100.0) {
-    writeBlock(2, 32*1+8, 6, 32, ASCII2offset('0', 0x00C0), FontNums32x48_);
-    write8x8Char(5, 32*2+8, 7, Font8x8_); // thousands decimal point (big)
-    writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
-    if (neg) 
-      write8x8Char(4, 32*1, 22, Font8x8_); // thick negative =22
-    else 
-      writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
-    write8x8Char(7, 128-16, str_new4[3], Font8x8_); 
-    write8x8Char(7, 128-8, str_new4[4], Font8x8_); 
-  } else if (altitude >=10.0) {
-    writeBlock(2, 32*0+8, 6, 32, ASCII2offset(' ', 0x00C0), FontNums32x48_);
-    writeBlock(2, 32*1+8, 6, 32, ASCII2offset(' ', 0x00C0), FontNums32x48_);
-    write8x8Char(5, 32*2+8, 7, Font8x8_); // thousands decimal point (big)
-    writeBlock(2, 32*2+16, 6, 32, ASCII2offset(str_new4[2], 0x00C0), FontNums32x48_);
-    if (neg) 
-      write8x8Char(4, 32*1, 22, Font8x8_); // thick negative =22
-    else 
-      writeBlock(2, 32*0+8, 6, 32, ASCII2offset(str_new4[0], 0x00C0), FontNums32x48_);
-    write8x8Char(7, 128-16, str_new4[3], Font8x8_); 
-    write8x8Char(7, 128-8, str_new4[4], Font8x8_); 
+    // bHH.Hhh & -HH.Hhh
+    if (neg) sb[0]=22; else sb[0]=' '; // thick small font minus or small blank
+    sb[1] = str[0];
+    sb[2] = str[1];
+    sb[3] = 7; // big point
+    sb[4] = str[2];
+    sb[5] = str[3];
+    sb[6] = str[4];
+  } else if (altitude >= 1000.0) {
+    // bBH.Hhh & b-H.Hhh
+    sb[0] = ' ';
+    if (neg) sb[1]=22; else sb[1]=' '; // thick small font minus or big blank
+    sb[2] = str[1];
+    sb[3] = 7;
+    sb[4] = str[2];
+    sb[5] = str[3];
+    sb[6] = str[4];
+  } else if (altitude >= 100.0) {
+    // bB0.Hhh & b-0.Hhh
+    sb[0] = ' ';
+    if (neg) sb[1]=22; else sb[1]=' '; // thick small font minus or big blank
+    sb[2] = '0'; // leading no-thousands zero
+    sb[3] = 7;
+    sb[4] = str[2];
+    sb[5] = str[3];
+    sb[6] = str[4];
+  } else if (altitude >= 10.0) {
+    // bBBbBhh & bBBb-hh
+    sb[0] = ' ';
+    sb[1] = ' ';
+    sb[2] = ' '; 
+    sb[3] = ' ';
+    if (neg) sb[4]=45; else sb[4]=' '; // normal small font minus or big digit
+    sb[5] = str[3]; 
+    sb[6] = str[4];
+  } else { // if (altitude >= 0.0) 
+    // bBBbBbh & bBBbb-h
+    sb[0] = ' ';
+    sb[1] = ' ';
+    sb[2] = ' '; 
+    sb[3] = ' ';
+    sb[4] = ' ';
+    if (neg) sb[5]=45; else sb[5]=' '; // normal small font minus or small blank
+    sb[6] = str[4];
   }
 
+  // display sb[0]. small thick minus if altitude >= 10,000.0 or small blank
+  if (sb[0] != sbo[0]) write8x8Char(4, 0, sb[0], Font8x8_);
 
+  // display sb[1]. big ten thousands digit, blank or small thick minus
+  if (sb[1] != sbo[1]) {
+    if (sb[1]==22) {
+      writeBlock(2, 8, 6, 32, ASCII2offset(' ', 0x00C0), FontNums32x48_); // clear big spot
+      write8x8Char(4, 32, sb[1], Font8x8_); // then overwrite with small thick minus
+    } else {
+      writeBlock(2, 8, 6, 32, ASCII2offset(sb[1], 0x00C0), FontNums32x48_); // clear big spot
+    }
+  }  
 
+  // display sb[2]. big thousands digit or big blank
+  if (sb[2] != sbo[2]) {
+    // big digit before thousands point or big blank
+    writeBlock(2, 40, 6, 32, ASCII2offset(sb[2], 0x00C0), FontNums32x48_); // clear big spot
+  }  
 
-/*
-  // display last 2 digits of altitude (eg 56 of 13456) in small font
-  // include small minus sign if necessary.  
-  if ((altitude < 10.0) && neg) 
-    write8x8Char(7, 128-16, '-', Font8x8_); 
-  else if (altitude < 10.0) 
-    write8x8Char(7, 128-16, ' ', Font8x8_);
-  write8x8Char(7, 128-8, str_new4[4], Font8x8_);
+  // display sb[3]. small big point or small blank 
+  if (sb[3] != sbo[3]) write8x8Char(4, 72, sb[3], Font8x8_);
 
+  // display sb[4]. big hundreds digit or big blank or small normal minus
+  if (sb[4] != sbo[4]) {
+    if (sb[4]==45) {
+      writeBlock(2, 80, 6, 32, ASCII2offset(' ', 0x00C0), FontNums32x48_); // clear big spot
+      write8x8Char(7, 104, sb[4], Font8x8_); // then overwrite with small normal minus
+    } else {
+      writeBlock(2, 80, 6, 32, ASCII2offset(sb[4], 0x00C0), FontNums32x48_); // clear big spot
+    } 
+  }  
 
-  if ((altitude < 100.0) && (altitude >= 10.0) && neg)
-    write8x8Char(7, 128-24, '-', Font8x8_); 
-  else if ((altitude < 100.0) && (altitude >= 10.0))
-    write8x8Char(7, 128-24, ' ', Font8x8_); 
-  write8x8Char(7, 128-16, str_new4[3], Font8x8_);
+  // display sb[5]. small digit, blank or minus 
+  if (sb[5] != sbo[5]) write8x8Char(7, 112, sb[5], Font8x8_);
 
-  if (altitude >= 100.0) {
-    write8x8Char(7, 128-16, str_new4[3], Font8x8_);
-    if ((altitude < 10000.0) && neg)  write8x8Char(7, 32, '-', Font8x8_);
-    else if ((altitude >= 10000.0) && neg) write8x8Char(7, 0, '-', Font8x8_);
-  }
-  write8x8Char(7, 128-8, str_new4[4], Font8x8_);
+  // display sb[6]. small digit 
+  if (sb[6] != sbo[6]) write8x8Char(7, 120, sb[6], Font8x8_);
 
-  // after loop finish make str_old4 the current str_new4
-  for (int i=0; i<7; i++) str_old4[i] = str_new4[i]; 
-*/  
+  // after loop finish make sb_ (old) the current sb (new)
+  for (int i=0; i<7; i++) sbo[i] = sb[i]; 
 }
-
-
 
 
 // a private utility function that maps numbers 'only' font chars to memmory offsets
