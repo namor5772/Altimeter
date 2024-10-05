@@ -32,22 +32,20 @@ MS5637 BARO;
 
 // Pin connected to push button (14) , other side of button connected to GND
 // Pin set to INPUT_PULLUP (to not require external resistor)
-const int buttonPin = A0;
+//const int buttonPin = A0;
 
 // Pin (15) connected to red LED Anode (long+) , LED Cathode(short-) connected to 220 R resistor,
 // other side of resistor connected to GND
-const int ledPin = A1;
+//const int ledPin = A1;
 
  // Pin connected to the 5V level of the lipo charging board (16)
 const int chargePin = A2;
 
 // global variables
-float temp, pressure, altBase, alt, altRel, cellPer, cellVol;
-//char str_old0[17]; char str_new0[17];
-//char str_old[17]; char str_new[17];
+float temp, pressure, altBase, altRel, cellPer, cellVol;
+float test = 0.0;
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
   
   while(!lipo.begin()) {
@@ -58,23 +56,20 @@ void setup()
   Serial.print(F("Found MAX17048 with Chip ID: 0x"));
   Serial.println(lipo.getChipID(), HEX);
 
-
-  pinMode(buttonPin, INPUT_PULLUP); // set the button pin as input with internal pull-up resistor
-  pinMode(ledPin, OUTPUT); // Set the LED pin as output
+// pinMode(buttonPin, INPUT_PULLUP); // set the button pin as input with internal pull-up resistor
+// pinMode(ledPin, OUTPUT); // Set the LED pin as output
   pinMode(chargePin, INPUT); // set the button pin as input (there are some floating problems?)
 
   // setup MS5637 sensor (An instance of the MS5637 object BARO has been constructed above)
   BARO.begin();
   BARO.dumpDebugOutput();
   BARO.getTempAndPressure(&temp, &pressure);
-  //altBase = BAROSensor.pressure2altitude(pressure);
-  altBase = 0;
+  altBase = BARO.pressure2altitude(pressure);
   Serial.println(altBase);
 }
 
 
-void loop()
-{
+void loop() {
   cellVol = lipo.cellVoltage();
   if (isnan(cellVol)) {
     Serial.println("Failed to read cell voltage, check battery is connected!");
@@ -85,54 +80,87 @@ void loop()
   cellPer = lipo.cellPercent();
   OLED.BatteryVoltage(cellVol, 0, 48);
   OLED.BatteryPercentage(cellPer, 0, 88);
-  int chargeState = digitalRead(chargePin);
-  bool charging = (chargeState==HIGH);
-  OLED.BatteryLevelGraphic(cellPer, 0, 112, charging);
-
-  // read the pushButton pin:
-  int buttonState = digitalRead(buttonPin);
+  //int chargeState = digitalRead(chargePin);
+  //bool charging = (chargeState==HIGH)
+  OLED.BatteryLevelGraphic(cellPer, 0, 112, (digitalRead(chargePin)==HIGH));
 
   if (!BARO.isOK()) {
     // Try to reinitialise the sensor if we can and measure temperature and pressure
     BARO.begin();
     BARO.getTempAndPressure(&temp, &pressure);
   }
-  else if (buttonState==LOW) { // button is pressed
-    // Turn on the LED measure temperature and pressure and zero the altimeter
-    digitalWrite(ledPin, HIGH);
-    Serial.println("Button pressed!");
-    BARO.getTempAndPressure(&temp, &pressure);
-    altBase = BARO.pressure2altitude(pressure);
-  }
-  else { // button is not pressed
-    // Turn off the LED and measure temperature and pressure
-    digitalWrite(ledPin, LOW);
+  else { // just normal measurements on each loop
     BARO.getTempAndPressure(&temp, &pressure);
   }
 
-  // Calculates the altitude (altRel) after zeroing
-  alt = BARO.pressure2altitude(pressure);
-  altRel = alt - altBase;
+  // Calculate altitude relative to where the altimeter was turned on
+  //alt = BARO.pressure2altitude(pressure);
+  altRel = BARO.pressure2altitude(pressure) - altBase;
 
   // display current temperature measured by the MS5637 (and used to
   // improve calculation of air pressure)
   OLED.Temperature(temp, 0, 0);
 
   // display current altitudete (adjusted to ground) measured by the MS5637
-//  OLED.Altitude_smallfont(altRel, 2, 0);
-  
-  OLED.Altitude_largefont(altRel);
-  
-  
-  
- // OLED.writeBlock(2, 0, 6, 32, 0x0000, FontNums32x48);
-
+  OLED.Altitude_largefont(altRel+test);
+  // OLED.Altitude_smallfont(altRel, 2, 0);
 
   OLED.writeEND();
 
+
+  // TEST SECTION
+  if ((test<=13000.0)&&(test>=0.0)) {
+    if (test<10) {
+      test += 1;
+    } else if (test<200) {
+      OLED.setBrightness(0xFF);
+      test += 7;
+    } else if (test<1000) {
+      OLED.setBrightness(0xC0);
+      test += 17;
+    } else if (test<4000) {
+      OLED.setBrightness(0xA0);
+      test += 29;
+    } else if (test<8000) {
+      OLED.setBrightness(0x10);
+      test += 37;
+    } else {
+      OLED.setBrightness(0x00);
+      test +=47;
+    }
+  }
+  else if (test>13000) {
+    OLED.setBrightness(0x20);
+    test = -1.0;   
+  }
+  else if ((test<0)&&(test>=-13000)) {
+    if (test>-10) {
+      test -= 1;
+    } else if (test>-200) {
+      OLED.setBrightness(0xFF);
+      test -= 7;
+    } else if (test>-1000) {
+      OLED.setBrightness(0xA0);
+      test -= 17;
+    } else if (test>-4000) {
+      OLED.setBrightness(0x50);
+      test -= 29;
+    } else if (test>-8000) {
+      OLED.setBrightness(0x10);
+      test -= 37;
+    } else {
+      OLED.setBrightness(0x00);
+      test -=47;
+    }
+  }
+  else { //if (test<-13000)
+    OLED.setBrightness(0x20);
+    test = 1.0;
+  }
+  
+  OLED.writeEND();
+
   Serial.print(temp);
-  Serial.print(" ");
-  Serial.print(alt);
   Serial.print(" ");
   Serial.println(altRel);
 

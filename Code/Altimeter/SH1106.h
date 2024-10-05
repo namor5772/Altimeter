@@ -68,6 +68,9 @@ class SH1106 {
 
   public:
 
+  // utility functions
+  void setBrightness(uint8_t brightness);
+
   // core displaying functions
   void invert();
   void uninvert();

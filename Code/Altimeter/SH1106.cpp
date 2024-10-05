@@ -46,7 +46,6 @@ void SH1106::TransferEnd() {
   digitalWrite(csPin, HIGH);
 }
 
-
 void SH1106::init() {
     initPins();
     reset();
@@ -90,7 +89,6 @@ void SH1106::configureDefault() {
   Write(SH1106_SET_SEGMENT_REMAP | 1);  // flip horizontally
   Write(SH1106_SET_COM_SCAN_DIR | 8);   // flip vertically
   Write(SH1106_SET_CONTRAST);
-//  Write(0xFF);                          // maximum brightness
   Write(0x10);                          // set lower brightness
   Write(SH1106_SET_DISPLAY_ON | 1);
 
@@ -114,6 +112,14 @@ void SH1106::uninvert() {
   TransferEnd();
 }
 
+// between 0x00 and 0xFF, Note: 0x00 is not blank
+void SH1106::setBrightness(uint8_t brightness) {
+  TransferStart();
+  CommandMode();
+  Write(SH1106_SET_CONTRAST);
+  Write(brightness); // set brightness
+  TransferEnd();
+}
 
 // displays a block of data to screen, at top-left-hand position (page, col),
 // ie pixel row is pagex8 and pixel column is col.
@@ -140,7 +146,7 @@ void SH1106::writeBlock(uint8_t page, uint8_t col, uint8_t pages, uint8_t cols, 
 
 // displays an 8x8 char at specified page and column position,
 // with char data bytes x8 (in vertical encoding) being obtained from Font2[][8] array
-// charCode can be input as eg 'A' since they are implicitly uint8_t.
+// charCode can be input as eg 'A' since they are ASCII chars.
 // need a mysterious 2 pixel offset for column !?
 void SH1106::write8x8Char(uint8_t page, uint8_t column, uint16_t charCode, const uint8_t Arr[][8]) {
   uint8_t columnByte;
@@ -156,8 +162,6 @@ void SH1106::write8x8Char(uint8_t page, uint8_t column, uint16_t charCode, const
   }  
   TransferEnd();
 }
-
-
 
 // generate and display formatted string for Battery Voltage cellVol,
 // but for speed only redisplay changed characters.
@@ -308,7 +312,6 @@ void SH1106::Altitude_smallfont(float altitude, uint8_t page, uint8_t col) {
   }
 }     
 
-
 // generate and display formatted string for altitude,
 // 6 pages (48 bits) high, in thousands of whole feet, fixed position.
 // but for speed only redisplay changed characters.
@@ -407,7 +410,6 @@ void SH1106::Altitude_largefont(float altitude) {
   for (int i=0; i<7; i++) sbo[i] = sb[i]; 
 }
 
-
 // a private utility function that maps numbers 'only' font chars to memmory offsets
 // in font bitmap arrays, needs offsetScale argument to make if useful for different size fonts
 // eg. FontNums32x48_ needs offsetScale=192, while FontNums16x24_ needs offsetScale=48
@@ -433,8 +435,7 @@ uint16_t SH1106::ASCII2offset(char char_, uint16_t offsetScale) {
   return charOfs*offsetScale;
 } 
 
-
-// After writing to screen need to call this to stop cursor?
+// After writing to screen need to call this (to stop cursor?)
 // All hell breaks loose if you dont!
 void SH1106::writeEND() {
   TransferStart();
@@ -446,4 +447,3 @@ void SH1106::writeEND() {
   Write(0);
   TransferEnd();
 }
-
