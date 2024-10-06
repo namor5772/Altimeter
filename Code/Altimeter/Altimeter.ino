@@ -48,6 +48,7 @@ float test = 0.0;
 void setup() {
   Serial.begin(9600);
   
+  OLED.setBrightness(0xFF);
   while(!lipo.begin()) {
     Serial.println(F("Couldn't find Adafruit MAX17048? Make sure a battery is plugged in!"));
     OLED.BatteryErrorGraphic(0, 112);
@@ -107,7 +108,7 @@ void loop() {
 
   OLED.writeEND();
 
-
+/*
   // TEST SECTION
   if ((test<=13000.0)&&(test>=0.0)) {
     if (test<10) {
@@ -157,7 +158,7 @@ void loop() {
     OLED.setBrightness(0x20);
     test = 1.0;
   }
-  
+*/  
   OLED.writeEND();
 
   Serial.print(temp);
