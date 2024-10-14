@@ -25,8 +25,8 @@ SH1106 OLED(13, 11, 8, 9, 10);
 // An instance of the MS5637 called BARO is created
 // The module is I2C and has just 4 pins:
 // 1 GND - connect to ground pin on micro (Arduino Pro Mini 5V 16Mhz assumed here)
-// 2 SDA - connect to SDA pin on micro (also called D2)
-// 3 SCL - connect to SCL pin on micro (also called D3)
+// 2 SDA - connect to SDA pin on micro (also called A4)
+// 3 SCL - connect to SCL pin on micro (also called A5)
 // 4 VCC - connect to VCC pin on micro (assumed 5V)
 MS5637 BARO;
 
@@ -39,7 +39,7 @@ MS5637 BARO;
 //const int ledPin = A1;
 
  // Pin connected to the 5V level of the lipo charging board (16)
-const int chargePin = A2;
+const int chargePin = 12;
 
 // global variables
 float temp, pressure, altBase, altRel, cellPer, cellVol;
@@ -74,10 +74,12 @@ void loop() {
   cellVol = lipo.cellVoltage();
   if (isnan(cellVol)) {
     Serial.println("Failed to read cell voltage, check battery is connected!");
+    lipo.begin();
     OLED.BatteryErrorGraphic(0, 112);
     delay(2000);
-    return;
+    //return;
   }
+  
   cellPer = lipo.cellPercent();
   OLED.BatteryVoltage(cellVol, 0, 48);
   OLED.BatteryPercentage(cellPer, 0, 88);
