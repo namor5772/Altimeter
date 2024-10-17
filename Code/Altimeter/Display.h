@@ -12,7 +12,7 @@ const uint8_t Battery_ [] PROGMEM = {
   B10011001,
   B00100100,
   B00000000,
-  0x44,	0x2A,	0x11 // carging 'icon'
+  0x44,	0x2A,	0x11 // chgarging 'icon'
 };
 
 // ibm 8x8 font, vertical-slicing, page1
