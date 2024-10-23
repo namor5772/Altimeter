@@ -93,8 +93,8 @@ void SH1106::configureDefault() {
   Write(SH1106_SET_DISPLAY_ON | 1);
 
   // rotate 180 - omit if necessary
-  Write(SH1106_SET_SEGMENT_REMAP);      
-  Write(SH1106_SET_COM_SCAN_DIR);       
+  //Write(SH1106_SET_SEGMENT_REMAP);      
+  //Write(SH1106_SET_COM_SCAN_DIR);       
   TransferEnd();
 }
 
