@@ -1,6 +1,10 @@
 # Altimeter
 
-A digital altimeter using a MS5637 based pressure sensor board and a 1.3" OLED SH1106 SPI driven screen. Run using an Arduino 5V 16Mhz Pro Mini microcontroller
+This github repository details the construction of a proof of concept digital skydiving altimeter.
+
+It is based on a pressure sensor board using the MS5637 chip and a 1.3" OLED SH1106 SPI driven screen. All is coordinated using an Arduino Pro Mini 5V 16Mhz microcontroller.  In addition it uses a charging circuit board for the 3.7V LiPo battery based on the MCP73831 chip and a battery level gauge circuit board using the MAXI17048 chip. Voltage for the circuit is boosted to 5V by a Pololu board...... 
+
+
 
 # LCD Assistant
 download from https://en.radzio.dxp.pl/bitmap_converter/
