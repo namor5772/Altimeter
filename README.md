@@ -2,8 +2,11 @@
 
 This github repository details the construction of a proof of concept digital skydiving altimeter.
 
-It is based on a pressure sensor board using the MS5637 chip and a 1.3" OLED SH1106 SPI driven screen. All is coordinated using an Arduino Pro Mini 5V 16Mhz microcontroller.  In addition it uses a charging circuit board for the 3.7V LiPo battery based on the MCP73831 chip and a battery level gauge circuit board using the MAXI17048 chip. Voltage for the circuit is boosted to 5V by a Pololu board...... 
+It is based on a pressure sensor board using the MS5637 chip and a 1.3" OLED SH1106 SPI driven screen. All is coordinated using an Arduino Pro Mini 5V 16Mhz microcontroller.  In addition it uses a circuit board based on the MCP73831 chip for charging the 3.7V LiPo battery and a battery level gauge circuit board using the MAXI17048 chip. Voltage for the circuit is boosted from the LiPo to 5V by a Pololu U1V10F5 regulor board. 
 
+![alt text](image.png)
+![alt text](image-2.png)
+![alt text](image-1.png)
 
 
 # LCD Assistant
