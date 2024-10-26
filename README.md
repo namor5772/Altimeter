@@ -1,5 +1,30 @@
 # Altimeter
 
+## Contents
+
+- [Summary](#Summary)
+- [Setup Raspberry PI](#Setup-Raspberry-PI)
+- [Setup Arduino](#Setup-Arduino)
+- [Design circuit board](#Design-circuit-board)
+  - [Install TinyCAD](#Install-TinyCAD)
+  - [Install VeeCAD](#Install-VeeCAD)
+- [Assemble weather station](#Assemble-weather-station)
+  - [Build circuit board](#Build-circuit-board)
+  - [Assemble electronics](#Assemble-electronics)
+  - [Attach BME280 sensors](#Attach-BME280-sensor)
+  - [Attach wind and rain gauges](#Attach-wind-and-rain-gauges)
+  - [Attach wifi interface](#Attach-wifi-interface)
+  - [Attach camera](#Attach-camera)
+  - [Attach power](#Attach-power)  
+- [Use weather station](#Use-weather-station)
+  - [Access web interface](#Access-web-interface)
+  - [Automate data collection](#Automate-data-collection)
+- [List of parts](#List-of-parts)
+  - [Core components](#Core-components)
+  - [Connectors](#Connectors)
+  - [External components](#External-components)
+
+## Summary
 This github repository details the construction of a proof of concept digital skydiving altimeter.
 
 It is based on a pressure sensor board using the MS5637 chip and a 1.3" OLED SH1106 SPI driven screen. All is coordinated using an Arduino Pro Mini 5V 16Mhz microcontroller.  In addition it uses a circuit board based on the MCP73831 chip for charging the 3.7V LiPo battery and a battery level gauge circuit board using the MAXI17048 chip. Voltage for the circuit is boosted from the LiPo to 5V by a Pololu U1V10F5 regulor board. 
