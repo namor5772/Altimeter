@@ -27,9 +27,9 @@ The only interface elements are an on/off switch and a USB micro-B charging port
 
 In addition on the top line in a small font is displayed the temperature in Celsius on the pressure sensor board, the current voltage of the LiPo battery, its % remaining capacity and a graphic of the same. This also indicates if the battery is being charged. See third picture below.
 
-![alt text](Images/image_hardware_open_top.png)
-![alt text](Images/image_hardware_open_bottom.png)
-![alt text](Images/image_hardware_complete.png)
+![image_hardware_open_top](Images/image_hardware_open_top.png)
+![image_hardware_open_bottom](Images/image_hardware_open_bottom.png)
+![image_hardware_complete](Images/image_hardware_complete.png)
 
 ## Circuit design
 The logic of the circuit is displayed using TinyCAD and built onto a strip board using VeeCAD. Below the process is explained. To just do the build skip to the [Assembly](#assembly) section.
@@ -49,9 +49,9 @@ With the above *.dsn file loaded into TinyCAD we use:
 
 **Special=>Check Design Rules...=>Check=>Generate PCB NetList=>Export**
 
-![alt text](Images/image_design_check.png)
-![alt text](Images/image_design_markers.png)
-![alt text](Images/image_PCB_export.png)
+![image_design_check](Images/image_design_check.png)
+![image_design_markers](Images/image_design_markers.png)
+![image_PCB_export](Images/image_PCB_export.png)
 
 **[V_RomansOwn2020.TCLib](Hardware/V_RomansOwn2020.TCLib)** is the TinyCAD library file with custom symbols needed if we are recreating the above Altimeter.net file. 
 
