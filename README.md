@@ -41,7 +41,7 @@ The logic of the circuit is displayed using TinyCAD and built onto a strip board
 We need several files that can reside in any directories (on the PC where TinyCAD is installed) when copied from here or recreated.
 
 **[Altimeter.dsn](Hardware/Altimeter.dsn)** is the actual file of the Altimeter circuit and is shown below when opened in the TinyCAD application.
-![alt text](Images/image_circuit.png)
+![image_circuit](Images/image_circuit.png)
 
 **[Altimeter.net](Hardware/Altimeter.net)** is used by VeeCAD when designing the population of the veroboard. It is the PCB netlist file created in Protel format from the above file using the TinyCAD application.
 
