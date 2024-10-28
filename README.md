@@ -56,7 +56,32 @@ With the above *.dsn file loaded into TinyCAD we use:
 **[V_RomansOwn2020.TCLib](Hardware/V_RomansOwn2020.TCLib)** is the TinyCAD library file with custom symbols needed if we are recreating the above Altimeter.net file. 
 
 ### VeeCAD
-Insert contents
+
+[**DOWNLOAD**](https://veecad.com/downloads.html) and install VeeCAD if you don't already have it.
+
+In addition we need the following files. They can reside in any directories (on the PC where VeeCAD is installed) when copied from here.
+
+**[V_Standard_RMG.per](Hardware/V_Standard_RMG.per)** is the custom VeeCAD shape library file. It contains the shapes that will correspond to components supplied by the Altimiter.net TinyCAD file. It is an expanded copy of the V_Standard.per file that comes with VeeCAD. It is needed when the Altimeter.per file is created from the Altimeter.net file
+
+**[Altimeter.per](Hardware/Altimeter.per)** is the actual diagram used to wire up the altimeter circuit (viewed through the VeeCAD application). This is ultimately all you need to build the altimeter together with the Altimeter.dsn file (displayed above) for reference.
+
+When creating Altimeter.per you load the Altimeter.net file (Created by TinyCAD) using the V_Standard_RMG.per shape library file.
+**Netlist=>Import=>Import**
+
+![image_import_netlist](Images/image_import_netlist.png)
+![image_altimeter_per](Images/image_altimeter_per.png)
+
+This shows the circuit layout with the copper tracks underneath and components on top (See the first picture in thge Summary above).
+
+**Board=>Matertials=>Components|B.O.M|Links|Wires|Breaks|Statistics**
+
+Enables other details of the circuit to be displayed. Below we see the mapping between the Item id and the actual component name. 
+
+![image_materials](Images/image_materials.png)
+
+The printed version of Altimeter.per is also usefull:
+![image_altimeter_printed](Images/image_altimeter_printed.png)
+
 
 ## Assembly
 Insert contents
