@@ -27,15 +27,33 @@ The only interface elements are an on/off switch and a USB micro-B charging port
 
 In addition on the top line in a small font is displayed the temperature in Celsius on the pressure sensor board, the current voltage of the LiPo battery, its % remaining capacity and a graphic of the same. This also indicates if the battery is being charged. See third picture below.
 
-![alt text](Images/image.png)
-![alt text](Images/image-2.png)
-![alt text](Images/image-1.png)
+![alt text](Images/image_hardware_open_top.png)
+![alt text](Images/image_hardware_open_bottom.png)
+![alt text](Images/image_hardware_complete.png)
 
 ## Circuit design
 The logic of the circuit is displayed using TinyCAD and build onto a strip board using VeeCAD. Below the process is explained though to just do the build skip to the Assembly section
 
 ### TinyCAD
-Insert contents
+
+[**DOWNLOAD**](https://www.tinycad.net/Home/Download) and install TinyCAD if you don't already have it.
+
+We need several files that can reside in any directories (on the PC where TinyCAD is installed) when copied from here or recreated.
+
+**[Altimeter.dsn](Hardware/Altimeter.dsn)** is the actual file of the Altimeter circuit and is shown below when opened in the TinyCAD application.
+![alt text](Images/image_circuit.png)
+
+**[Altimeter.net](Hardware/Altimeter.net)** is used by VeeCAD when designing the population of the veroboard. It is the PCB netlist file created in Protel format from the above file using the TinyCAD application.
+
+With the above *.dsn file loaded into TinyCAD we use:
+
+**Special=>Check Design Rules...=>Check=>Generate PCB NetList=>Export**
+
+![alt text](Images/image_design_check.png)
+![alt text](Images/image_design_markers.png)
+![alt text](Images/image_PCB_export.png)
+
+**[V_RomansOwn2020.TCLib](Hardware/V_RomansOwn2020.TCLib)** is the TinyCAD library file with custom symbols needed if we are recreating the above Altimeter.net file. 
 
 ### VeeCAD
 Insert contents
@@ -44,7 +62,7 @@ Insert contents
 Insert contents
 
 ## Software
-The details/logic of the software and how to set it up for burning is detailed in the next two sections. If you just want to burn the hex file skip to the Programming section below. 
+The details/logic of the software and how to set it up for burning is detailed in the next three sections. If you just want to burn the hex file skip to the Programming section below. 
 
 ### Toolchain
 Insert contents
