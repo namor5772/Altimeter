@@ -6,7 +6,7 @@
 - [Circuit design](#circuit-design)
   - [TinyCAD](#tinycad)
   - [VeeCAD](#veecad)
-- [Assembly](#assemble)
+- [Assembly](#assembly)
 - [Software](#software)
   - [Toolchain](#toolchain)
   - [Code](#code)
@@ -32,7 +32,7 @@ In addition on the top line in a small font is displayed the temperature in Cels
 ![alt text](Images/image_hardware_complete.png)
 
 ## Circuit design
-The logic of the circuit is displayed using TinyCAD and build onto a strip board using VeeCAD. Below the process is explained though to just do the build skip to the Assembly section
+The logic of the circuit is displayed using TinyCAD and built onto a strip board using VeeCAD. Below the process is explained. To just do the build skip to the [Assembly](#assembly) section.
 
 ### TinyCAD
 
