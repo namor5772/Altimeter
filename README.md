@@ -84,7 +84,46 @@ The printed version of Altimeter.per is also usefull:
 
 
 ## Assembly
-Insert contents
+Here we detail the actual construction of the altimeter. The printed version of the Altimeter.per file is really all you need to do this, together with the componennt mapping.
+
+Steps:
+1. Cut out the strip board to the shown shape, so that it fits in the required enclosure.
+1. Make the breaks in the copper tracks as indicated by the X's. Note: Altimiter.per always shows the non copper side of the veroboard, so be carefull when doing this.
+1. Solder the wire links (green horizontal) using 22awg tinned copper wire. Make sure this is on the side without the copper strips and are flush to the board since some misht be below some of the component boards and we don't want any shorts!
+1. Install wire links INP, BAT, D2 & C2 using plastic shielded solid cored hookup wire on the copper side of the veroboard. Make sure that the wire does not extend to the non-copper side to avoid possible shorting!
+1. Solder the 7pin 8.5mm high stackable header in position U1 on the non-copper side of veroboard.
+1. Wire up the switch SW1 using 2 pieces of about 4cm of flexible hookup wire on the non-copper side of the veroboard at positions (14,28) and (14,29). Solder and use a glue gun sparingly to prevent flexing. Also use a glue gun on the switch side after soldering.
+1. Solder 4 x 4pin terminal strips to the Pro Mini board as shown by the upside-down green triangles ie. positions: (6,1)-(6,4), (6,9)-(6-12), (12,1)-(12,4) and (12,9)-(12,12). Also solder a 6pin terminal strip to the top of the Pro Mini (used for programming it), approximate position (6,0)-(12,0). Cut them down to about 4mm (so that it fits in the enclosure)
+1. Solder plastic shielded solid cored hookup wire to the underside of the Pro Mini at positions C and D (for I2C) and route it out the space at the bottom (position (12,6-7)).
+1. Finaly solder the Pro Mini (XC1) to the non-copper side of the veroboard as indicated.
+1. Solder (if necessary) a 3pin terminal strip to the U3 board at positions (18,4)-(18,6).
+1. Carefully sand down its right hand side (so there is room when it butts up against U2), but be carefull not to damage it.
+1. Finally solder U3 (the U1V10F5 board) to the non-copper side of the veroboard as indicated.
+1. Solder the C and D wires to their positions that will be under the U2 board. Make sure that they are not too long, or short the wire links they pass over.
+1. Carefully sand both sides of board U2 (so there is room when it butts up against U3 and U5), but be carefull not to damage it.
+1. Solder (if necessary) a 4pin terminal strip to the U2 board at positions (17,8)-(17,11) .
+1. Finally solder the U2 board (MS5637) to the non-copper side of the veroboard as indicated.
+1. Solder plastic shielded solid cored hookup wire to the underside of the U5 board positions G and B (for the LiPo Battery) and route it out to the right around position (14,23).
+1. Solder (if necessary) a 6pin terminal strip to the U5 board at positions (11,15)-(11,20) .
+1. Finally solder the U5 board (MAX17048) to the non-copper side of the veroboard as indicated.
+1. Solder the B and G wires to their respective positions (11,25) and (11,26) near to U4. Make sure that they are not too long, or short the wire links they pass over.
+1. Solder (if necessary) a 4pin terminal strip to the U4 board at positions (9,25)-(9,28).
+1. Finally solder the U4 board (MCP73831) to the non-copper side of the veroboard as indicated.
+1. Attach U4 more securely to the veroboard by adding some wood to the space between U4 and tghe veroboard and fix with a glue gun.
+1. Attach the LiPo battery to U4. Check beforehand that the polarity is correct. We now have a veroboard circuit with externally attached battery and switch (see first picture above).
+1. Solder (if necessary) a 7pin terminal strip to the U1 board (OLED screen XC3728).
+1. Now insert this screen into the stacking header from point 5 above, so that it partially covers XC1, U2 and U5. 
+1. Insert this whole combined circuit board with screen into the bottom of the 83x54x31mm Jiffy box, screen first. This should fit and enable you to find the positions for screwing the screen to the bottom of the box as well as the cutout for the screen. It should also show you the position for the cutout for the USB charging socket near position (7,30) that sits on U4. Also note the cuttout necessary for the XC1 programing pins at positions (6,0)-(12,0)
+
+
+
+1. Cut out the appropriate openings in the 83x54x31mm Jiffy Box
+
+
+
+
+
+
 
 ## Software
 The details/logic of the software and how to set it up for burning is detailed in the next three sections. If you just want to burn the hex file skip to the Programming section below. 
