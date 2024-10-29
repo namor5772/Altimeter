@@ -73,7 +73,7 @@ When creating Altimeter.per you load the Altimeter.net file (Created by TinyCAD)
 
 This shows the circuit layout with the copper tracks underneath and components on top (See the first picture in thge Summary above).
 
-**Board=>Matertials=>Components|B.O.M|Links|Wires|Breaks|Statistics**
+**Board=>Materials=>Components|B.O.M|Links|Wires|Breaks|Statistics**
 
 Enables other details of the circuit to be displayed. Below we see the mapping between the Item id and the actual component name. 
 
@@ -84,10 +84,10 @@ The printed version of Altimeter.per is also usefull:
 
 
 ## Assembly
-Here we detail the actual construction of the altimeter. The printed version of the Altimeter.per file is really all you need to do this, together with the componennt mapping.
+Here we detail the actual construction of the altimeter. The printed version of the Altimeter.per file is really all you need to do this, together with the component mappings.
 
 Steps:
-1. Cut out the strip board to the shown shape, so that it fits in the required enclosure.
+1. Cut out the strip board to the shown shape. It should fit snuggly into the Jiffy box.
 1. Make the breaks in the copper tracks as indicated by the X's. Note: Altimiter.per always shows the non copper side of the veroboard, so be carefull when doing this.
 1. Solder the wire links (green horizontal) using 22awg tinned copper wire. Make sure this is on the side without the copper strips and are flush to the board since some misht be below some of the component boards and we don't want any shorts!
 1. Install wire links INP, BAT, D2 & C2 using plastic shielded solid cored hookup wire on the copper side of the veroboard. Make sure that the wire does not extend to the non-copper side to avoid possible shorting!
@@ -110,20 +110,24 @@ Steps:
 1. Solder (if necessary) a 4pin terminal strip to the U4 board at positions (9,25)-(9,28).
 1. Finally solder the U4 board (MCP73831) to the non-copper side of the veroboard as indicated.
 1. Attach U4 more securely to the veroboard by adding some wood to the space between U4 and tghe veroboard and fix with a glue gun.
-1. Attach the LiPo battery to U4. Check beforehand that the polarity is correct. We now have a veroboard circuit with externally attached battery and switch (see first picture above).
+1. Attach the LiPo battery to U4. Check beforehand that the polarity is correct. We now have a veroboard circuit with externally attached battery and switch (see first picture in the Summasry section).
 1. Solder (if necessary) a 7pin terminal strip to the U1 board (OLED screen XC3728).
 1. Now insert this screen into the stacking header from point 5 above, so that it partially covers XC1, U2 and U5. 
-1. Insert this whole combined circuit board with screen into the bottom of the 83x54x31mm Jiffy box, screen first. This should fit and enable you to find the positions for screwing the screen to the bottom of the box as well as the cutout for the screen. It should also show you the position for the cutout for the USB charging socket near position (7,30) that sits on U4. Also note the cuttout necessary for the XC1 programing pins at positions (6,0)-(12,0)
+1. Insert this whole combined circuit board with screen into the bottom of the 83x54x31mm Jiffy box, screen first. This should fit and enable you to find the positions for screwing the screen to the bottom of the box as well as the cutout for the screen. It should also show you the cuttout necessary for the XC1 programing pins at positions (6,0)-(12,0).
+1. After removing the circuit from the the box carefully create the above openings and holes.
+1. Using appropriate screws (not too long) and short plastic spacers attach the screen to the bottom of the box. See the first three pictures in the Summary section.
+1. Insert the veroboard back into the veroboard. This will finalise the position of the cutout necessary to access the USB charging socket at the side of the box.
+1. Remove the circuit from the box and thus the screen. Create the cutout for the USB charging socket and also on the same side for the switch.
+1. Stick the switch to the inside of Jiffy box so that the slider can freely move through the cutout. Also use the glue gun. See the first three pictures in the Summary section of how this should look.
+1. Reinstall the veroboard into the screen and then into the box. In doing so be carefull how you route the switch wiring.
+1. Place some thin plastic from an antistatic bag on the copper side of the veroboard when it is in the Jiffy box and the place the LiPo battery on it being carefull with the wiring.
+1. You can now screw the Jiffy box shut. As long as the screen spacers are not too long there should be enough yet snug room for the battery. Everything is now ready to program the Pro Mini.
 
-
-
-1. Cut out the appropriate openings in the 83x54x31mm Jiffy Box
-
-
-
-
-
-
+Below are some pictures to assist with assembly:
+![image-complete1](Images/image-complete1.png)
+![image-complete2](Images/image-complete2.png)
+![image-complete3](Images/image-complete3.png)
+![image-complete4](Images/image-complete4.png)
 
 ## Software
 The details/logic of the software and how to set it up for burning is detailed in the next three sections. If you just want to burn the hex file skip to the Programming section below. 
