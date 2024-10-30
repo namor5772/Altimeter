@@ -10,14 +10,13 @@
 - [Software](#software)
   - [Toolchain](#toolchain)
   - [Code](#code)
-  - [HEX file](#hex-file)
   - [LCD Assistant](#lcd-assistant)
-  - [Programming](#programming)
- - [Parts list](#parts-list)
-   - [Core components](#core-components)
-   - [Connectors](#connectors)
-   - [Other parts](#other-parts)
-   - [External components](#external-components)
+  - [HEX file](#hex-file)
+- [Parts list](#parts-list)
+  - [Core components](#core-components)
+  - [Connectors](#connectors)
+  - [Other parts](#other-parts)
+  - [External components](#external-components)
 
 ## Summary
 This github repository details the construction of a proof of concept digital skydiving altimeter.
@@ -133,19 +132,19 @@ Below are some pictures to assist with assembly:
 ![image-complete4](Images/image-complete4.png)
 
 ## Software
-The details/logic of the software and how to set it up for burning is detailed in the next three sections. If you just want to burn the hex file skip to the Programming section below. 
+The details/logic of the software and how to set it up for burning is detailed in the next three sections. If you just want to burn the hex file skip to the [HEX file](#hex-file) section below. 
 
 ### Toolchain
 Development is assumed to be done using the Arduino IDE on a Windows machine.
 I used Version 2.3.3 with default installation. Since the altimeter uses the Adafruit MAX1704X Lipo Monitor / Fuel Gauge breakout (U5) we need to install the Adafruit MAX1704X library
 
-![alt text](image.png)
+![alt text](Images/image-0.png)
 
 Install with dependancies
 
-![alt text](image-1.png)
+![alt text](Images/image-1.png)
 
-![alt text](image-2.png)
+![alt text](Images/image-2.png)
 
 Now to compile the code for the Pro Mini (XC1) you just need to place the following files in an arbitrary directory. This will be discussed in detail in the next section. It can most conveniently be the one you clone this repository into: [Your Repository Directory]\Altimeter\Code\Altimeter.
 
@@ -159,40 +158,27 @@ The required files in this directory are:<br>
 
 Run the Arduino IDE and open the Altimeter.ino from the above directory. This will open all these files in seperate tabs (see picture below):
 
-![alt text](image-3.png)<br>
+![alt text](Images/image-3.png)<br>
 
 Select the correct Board and Processor:<br>
 **Tools=>Board:CURRENT=>Boards Manager...=>Arduino AVR Boards=>Arduino Pro or Pro Mini=>Enter**
 **Tools=>Processor:CURRENT=>ATmega328P (5V, 16 MHz)=>Enter**
 
-![alt text](image-4.png)
+![alt text](Images/image-4.png)
 
 Now to actually program the Pro Mini (which is assumed to have a bootloader) you will need an FTDI Serial Adaptor. There are many options Eg. the Duinotch Arduino Compatible USB to Serial Adaptor [XC4464](https://jaycar.com.au/p/XC4464) sold by Jaycar:
 
-![alt text](image-5.png)
+![alt text](Images/image-5.png)
 
 The resulting USB connection between the PC and altimeter is shown below. You will need to make up 6xmale from the breadboard to 6xfemale into the ProMini.
 
-![alt text](image-7.png)
+![alt text](Images/image-7.png)
 
 To now actually program the Pro Mini. With the previous setup make sure the correct live COM port is selected. Then 
 **Sketch=>Upload=>Enter**
 
 With verbose output set you will see something like this:
-![alt text](image-8.png)
-
-### HEX file
-
-In order to program the Pro Mini you do not even have to use the Arduino IDE as detailed above but directly burn the Altimeter.ino.hex file into it using the avrdude.exe as follows.
-1. Attach the FTDI Serial Adaptor to the altimeter as detailed in the previous section.
-1. Using Device Manager determine the COM port it is attached to.
-1. Adjust the COM port number in the Altimeter.bat file if necessary
-1. Open a Windows terminal and go to the directory that contains Altimeter.ino.hex
-1. Type .\Altimeter.bat
-1. This should burn the HEX file to the Pro Mini and if sucessfull finish with a final consol output line of "avrdude done. Thank you."
-
-
-
+![alt text](Images/image-8.png)
 
 
 ### Code
@@ -208,8 +194,21 @@ LCD Assistant is a free tool for converting monochromatic bitmaps to data arrays
 
 To convert image from bitmap file (or other standard graphics file format) to data array select from File menu command 'Load image'. Next, select byte orientation (for example : vertical for KS0108, SED1520, SPLC0501C etc; horizontal for : T6963C, SED1335 etc). If in data array must be image size (width and height) select 'Include size' checkbox and specify endianness of size (for example: Little endian for AVR; Big endian for ST7). Size are placed in two 16-bit variables at the begin of data array. Next, specify pixels/byte parameter. If display can support miscellaneous font size (displays with T6963C controller) image can be converted to array of bytes with specified amount of pixels in each byte. At last select from "File" menu command "Save output". Data array will be saved in specified file. Next, just include this file into project and use array name as parameter for function that displays bitmap on LCD. If you have trouble with use generating file, or program will generate wrong files please let me know.
 
-### Programming
-Insert contents
+### HEX file
+
+In order to program the Pro Mini you do not even have to use the Arduino IDE as detailed above but directly burn the Altimeter.ino.hex file using the files in the [Your Repository Directory]\Altimeter\Code\ directory. In particular: <br>
+[Altimeter.bat](Code/Altimeter.bat)<br>
+[Altimeter.ino.hex](Code/Altimeter.ino.hex)<br>
+[avrdude.conf](Code/avrdude.conf)<br>
+[avrdude.exe](Code/avrdude.exe)<br>
+
+It is assumed that you have the following files in one directory. 
+1. Attach the FTDI Serial Adaptor to the altimeter as detailed in the previous section.
+1. Using Device Manager determine the COM port it is attached to.   
+1. Adjust the COM port number in the Altimeter.bat file if necessary
+1. Open a Windows terminal and go to the directory that contains Altimeter.ino.hex and the other three files (it can actually be any directory)
+1. Type .\Altimeter.bat Enter on the command line.
+1. This should burn the HEX file to the Pro Mini and if sucessfull finish with a final terminal output line of "avrdude done. Thank you."
 
 ## Parts list
   
