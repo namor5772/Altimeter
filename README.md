@@ -89,9 +89,9 @@ Here we detail the actual construction of the altimeter. The printed version of 
 Steps:
 1. Cut out the strip board to the shown shape. It should fit snuggly into the Jiffy box.
 1. Make the breaks in the copper tracks as indicated by the X's. Note: Altimiter.per always shows the non copper side of the veroboard, so be carefull when doing this.
-1. Solder the wire links (green horizontal) using 22awg tinned copper wire. Make sure this is on the side without the copper strips and are flush to the board since some misht be below some of the component boards and we don't want any shorts!
+1. Solder the wire links (green horizontal) using 22awg tinned copper wire. Make sure this is on the side without the copper strips and are flush to the board since some might be below some of the component boards and we don't want any shorts!
 1. Install wire links INP, BAT, D2 & C2 using plastic shielded solid cored hookup wire on the copper side of the veroboard. Make sure that the wire does not extend to the non-copper side to avoid possible shorting!
-1. Solder the 7pin 8.5mm high stackable header in position U1 on the non-copper side of veroboard.
+1. Solder a 7pin 8.5mm high stackable header in position U1 on the non-copper side of veroboard.
 1. Wire up the switch SW1 using 2 pieces of about 4cm of flexible hookup wire on the non-copper side of the veroboard at positions (14,28) and (14,29). Solder and use a glue gun sparingly to prevent flexing. Also use a glue gun on the switch side after soldering.
 1. Solder 4 x 4pin terminal strips to the Pro Mini board as shown by the upside-down green triangles ie. positions: (6,1)-(6,4), (6,9)-(6-12), (12,1)-(12,4) and (12,9)-(12,12). Also solder a 6pin terminal strip to the top of the Pro Mini (used for programming it), approximate position (6,0)-(12,0). Cut them down to about 4mm (so that it fits in the enclosure)
 1. Solder plastic shielded solid cored hookup wire to the underside of the Pro Mini at positions C and D (for I2C) and route it out the space at the bottom (position (12,6-7)).
