@@ -1,4 +1,3 @@
-
 #include "MS5637.h"
 #include "SH1106.h"
 #include <Adafruit_MAX1704X.h>
@@ -61,7 +60,7 @@ void setup() {
   BARO.dumpDebugOutput();
   BARO.getTempAndPressure(&temp, &pressure);
   altBase = BARO.pressure2altitude(pressure);
-//  altBase = 0.0;
+  altBase = 0.0;
   Serial.println(altBase);
 }
 

@@ -84,7 +84,7 @@ The printed version of Altimeter.per is also usefull:
 
 
 ## Assembly
-Here we detail the actual construction of the altimeter. The printed version of the Altimeter.per file is really all you need to do this, together with the component mappings.
+Here we detail the actual construction of the altimeter. The printed version of the Altimeter.per file is all you really need to do this, together with the component mappings.
 
 Steps:
 1. Cut out the strip board to the shown shape. It should fit snuggly into the Jiffy box.
@@ -133,7 +133,48 @@ Below are some pictures to assist with assembly:
 The details/logic of the software and how to set it up for burning is detailed in the next three sections. If you just want to burn the hex file skip to the Programming section below. 
 
 ### Toolchain
-Insert contents
+Development is assumed to be done using the Arduino IDE on a Windows machine.
+I used Version 2.3.3 with default installation. Since the altimeter uses the Adafruit MAX1704X Lipo Monitor / Fuel Gauge breakout (U5) we need to install the Adafruit MAX1704X library
+![alt text](image.png)
+
+Install with dependancies
+
+![alt text](image-1.png)
+![alt text](image-2.png)
+
+Now to compile the code for the Pro Mini (XC1) you just need to place the following files in an arbitrary directory. This will be discussed in detail in the next section). It can most conveniently be the one you clone this repository into: [Your Repository Directory]\Altimeter\Code\Altimeter.
+
+The required files in this directory are:<br>
+[Altimiter.ino](Code/Altimeter/Altimeter.ino)<br> 
+[SH1106.h](Code/Altimeter/SH1106.h)<br>
+[MS5637.h](Code/Altimeter/SH1106.h)<br>
+[Display.h](Code/Altimeter/SH1106.h)<br>
+[SH1106.cpp](Code/Altimeter/SH1106.cpp)<br>
+[MS5637.cpp](Code/Altimeter/SH1106.cpp)<br>
+
+Run the Arduino IDE and open the Altimeter.ino from the above directory. This will open all these files in seperate tabs (see picture below):
+
+![alt text](image-3.png)<br>
+
+Select the correct Board and Processor:<br>
+**Tools=>Board:CURRENT=>Boards Manager...=>Arduino AVR Boards=>Arduino Pro or Pro Mini=>Enter**
+**Tools=>Processor:CURRENT=>ATmega328P (5V, 16 MHz)=>Enter**
+
+![alt text](image-4.png)
+
+Now to actually program the Pro Mini (which is assumed to have a bootloader) you will need an FTDI Serial Adaptor. There are many options eg the Duinotch Arduino Compatible USB to Serial Adaptor [XC4464](https://jaycar.com.au/p/XC4464) sold by Jaycar:
+
+![alt text](image-5.png)
+
+The resulting USB connection between the PC and altimeter is shown below:
+
+![alt text](image-7.png)
+
+To actually program the Pro Mini. With the previous setup make sure the correct live COM port is selected. Then 
+**Sketch=>Upload=>Enter**
+
+With verbose output set you will see something like this:
+![alt text](image-8.png)
 
 ### Code
 Insert contents
