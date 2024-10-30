@@ -1,0 +1,1 @@
+C:\Users\roman\OneDrive\GitRepos\Altimeter\Code/avrdude -CC:\Users\roman\OneDrive\GitRepos\Altimeter\Code/avrdude.conf -v  -patmega328p -carduino -PCOM3 -b57600 -D -Uflash:w:C:\Users\roman\OneDrive\GitRepos\Altimeter\Code/Altimeter.ino.hex:i

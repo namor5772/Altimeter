@@ -10,6 +10,7 @@
 - [Software](#software)
   - [Toolchain](#toolchain)
   - [Code](#code)
+  - [HEX file](#hex-file)
   - [LCD Assistant](#lcd-assistant)
   - [Programming](#programming)
  - [Parts list](#parts-list)
@@ -26,6 +27,8 @@ It is based on a pressure sensor board using the MS5637 chip and a 1.3" OLED SH1
 The only interface elements are an on/off switch and a USB micro-B charging port. When first switched on the zeroed altitude is displayed in thousands of feet. A large font is used for digits above 99 feet. Eg. 13.532 indicates 13,532 feet above initial switching on altitude, with 13.5 displayed in a large font and 32 in small. Also a leading zero is dsiplayed for altitiudes inclusively between 100 and 999 feet. Eg 852 feet is displayed as 0.852 with 0.8 in large font and  52 in small.
 
 In addition on the top line in a small font is displayed the temperature in Celsius on the pressure sensor board, the current voltage of the LiPo battery, its % remaining capacity and a graphic of the same. This also indicates if the battery is being charged. See third picture below.
+
+If you just want to build the altimeter the go to [Assembly](#assembly) and then [HEX file](#hex-file).
 
 ![image_hardware_open_top](Images/image_hardware_open_top.png)
 ![image_hardware_open_bottom](Images/image_hardware_open_bottom.png)
@@ -135,14 +138,16 @@ The details/logic of the software and how to set it up for burning is detailed i
 ### Toolchain
 Development is assumed to be done using the Arduino IDE on a Windows machine.
 I used Version 2.3.3 with default installation. Since the altimeter uses the Adafruit MAX1704X Lipo Monitor / Fuel Gauge breakout (U5) we need to install the Adafruit MAX1704X library
+
 ![alt text](image.png)
 
 Install with dependancies
 
 ![alt text](image-1.png)
+
 ![alt text](image-2.png)
 
-Now to compile the code for the Pro Mini (XC1) you just need to place the following files in an arbitrary directory. This will be discussed in detail in the next section). It can most conveniently be the one you clone this repository into: [Your Repository Directory]\Altimeter\Code\Altimeter.
+Now to compile the code for the Pro Mini (XC1) you just need to place the following files in an arbitrary directory. This will be discussed in detail in the next section. It can most conveniently be the one you clone this repository into: [Your Repository Directory]\Altimeter\Code\Altimeter.
 
 The required files in this directory are:<br>
 [Altimiter.ino](Code/Altimeter/Altimeter.ino)<br> 
@@ -162,19 +167,33 @@ Select the correct Board and Processor:<br>
 
 ![alt text](image-4.png)
 
-Now to actually program the Pro Mini (which is assumed to have a bootloader) you will need an FTDI Serial Adaptor. There are many options eg the Duinotch Arduino Compatible USB to Serial Adaptor [XC4464](https://jaycar.com.au/p/XC4464) sold by Jaycar:
+Now to actually program the Pro Mini (which is assumed to have a bootloader) you will need an FTDI Serial Adaptor. There are many options Eg. the Duinotch Arduino Compatible USB to Serial Adaptor [XC4464](https://jaycar.com.au/p/XC4464) sold by Jaycar:
 
 ![alt text](image-5.png)
 
-The resulting USB connection between the PC and altimeter is shown below:
+The resulting USB connection between the PC and altimeter is shown below. You will need to make up 6xmale from the breadboard to 6xfemale into the ProMini.
 
 ![alt text](image-7.png)
 
-To actually program the Pro Mini. With the previous setup make sure the correct live COM port is selected. Then 
+To now actually program the Pro Mini. With the previous setup make sure the correct live COM port is selected. Then 
 **Sketch=>Upload=>Enter**
 
 With verbose output set you will see something like this:
 ![alt text](image-8.png)
+
+### HEX file
+
+In order to program the Pro Mini you do not even have to use the Arduino IDE as detailed above but directly burn the Altimeter.ino.hex file into it using the avrdude.exe as follows.
+1. Attach the FTDI Serial Adaptor to the altimeter as detailed in the previous section.
+1. Using Device Manager determine the COM port it is attached to.
+1. Adjust the COM port number in the Altimeter.bat file if necessary
+1. Open a Windows terminal and go to the directory that contains Altimeter.ino.hex
+1. Type .\Altimeter.bat
+1. This should burn the HEX file to the Pro Mini and if sucessfull finish with a final consol output line of "avrdude done. Thank you."
+
+
+
+
 
 ### Code
 Insert contents

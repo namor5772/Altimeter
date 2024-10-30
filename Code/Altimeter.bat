@@ -1,0 +1,1 @@
+%CD%/avrdude -C%CD%/avrdude.conf -v  -patmega328p -carduino -PCOM3 -b57600 -D -Uflash:w:%CD%/Altimeter.ino.hex:i
