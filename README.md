@@ -149,7 +149,7 @@ Install with dependancies
 Now to compile the code for the Pro Mini (XC1) you just need to place the following files in an arbitrary directory. This will be discussed in detail in the next section. It can most conveniently be the one you clone this repository into: [Your Repository Directory]\Altimeter\Code\Altimeter.
 
 The required files in this directory are:<br>
-[Altimiter.ino](Code/Altimeter/Altimeter.ino)<br> 
+[Altimeter.ino](Code/Altimeter/Altimeter.ino)<br> 
 [SH1106.h](Code/Altimeter/SH1106.h)<br>
 [MS5637.h](Code/Altimeter/SH1106.h)<br>
 [Display.h](Code/Altimeter/SH1106.h)<br>
@@ -182,7 +182,13 @@ With verbose output set you will see something like this:
 
 
 ### Code
-Insert contents
+All the magic for the altimeter happens in the code written for the Arduino Pro Mini (XC1) using the Arduino IDE.
+It interfaces with 3 peripheral boards. Using I2C it sets up the Pressure sensor (U2) and polls in the loop of the main source file Altimeter.ino generating the altitude data above initial ground level. The temperature on chip is also measured. The Battery level board (U5) is also polled using I2C, with data generated within the main loop. Using custom bit-bashed SPI interface protocol the polled data is then displayed on the OLED screen (U1), being updated in the main loop. The status of whether the LiPo battery is being charged is also polled in the main loop and displayed via a graphic on the screen.
+
+Below is the main source code file [Altimeter.ino](Code/Altimeter/Altimeter.ino).<br>
+It creates objects representing the Pressure sensor board, Battery level board and OLED screen. These are initialised in the setup() function and then polled in the loop() function. The charging status of the LiPo battery is also polled in the loop() function via pin D12 of the Pro Mini.<br>
+Header files are included to access the libraries for each object created above. in particular ["MS5637.h"](Code/Altimeter/MS5637.h) for the pressure sensor (U2), ["SH1106.h"](Code/Altimeter/SH1106.h) for the OLED screen (U1) and <Adafruit_MAX1704X.h> for the battery level board (U5).
+The first two have been customized/simplified from existing library code and as such have been explicitly included in the directory of the main source Altimeter.ino file ie. both the *.h and *.cpp files. As such they are shown and discussed below. The last header refers to an external vendors library that was installed via the Arduino IDE. The source code for this is not visible and is not discussed. 
 
 ```cpp
 #include "MS5637.h"
@@ -302,7 +308,7 @@ void loop() {
 }
 ```
 
-TEXT
+Below is the header file [MS5637.h](Code/Altimeter/MS5637.h) for my Pressure Sensor (U2) "library".
 
 ```cpp
 /* BaroSensor
@@ -369,8 +375,9 @@ private:
 };
 ```
 
-TEXT
-
+Below is the source file [MS5637.cpp](Code/Altimeter/MS5637.cpp) for my Pressure Sensor (U2) "library".<br>
+It uses the the Wire library for I2C. Ultimately this code is informed by the [ENG_DS_MS5637-02BA03_B5.pdf](Extra/ENG_DS_MS5637-02BA03_B5.pdf) document about the pressure sensor chip.
+  
 ```cpp
 #include "MS5637.h"
 
@@ -521,7 +528,7 @@ float MS5637::pressure2altitude(float pressure)
 }
 ```
 
-TEXT
+Below is the header file [SH1106.h](Code/Altimeter/SH1106.h) for my OLED screen (U1) "library".
 
 ```cpp
 #include <Arduino.h>
@@ -616,7 +623,8 @@ class SH1106 {
 };
 ```
 
-TEXT
+Below is the source file [SH1106.cpp](Code/Altimeter/SH1106.cpp) for my OLED screen (U1) "library".<br>
+It uses a custom bit-bashed SPI interface explicitly coded here. Ultimately this code is informed by the [SH1106.pdf](Extra/SH1106.pdf) document that about driver and controller chip used by the display voard. It also includes the Display.h file which contains all the font and graphic data needed by the display
 
 ```cpp
 #include "Arduino.h"
@@ -1087,7 +1095,7 @@ const uint8_t Battery_ [] PROGMEM = {
   B10011001,
   B00100100,
   B00000000,
-  0x44,	0x2A,	0x11 // chgarging 'icon'
+  0x44,	0x2A,	0x11 // charging 'icon'
 };
 
 // ibm 8x8 font, vertical-slicing, page1
