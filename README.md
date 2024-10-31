@@ -14,9 +14,8 @@
   - [HEX file](#hex-file)
 - [Parts list](#parts-list)
   - [Core components](#core-components)
-  - [Connectors](#connectors)
   - [Other parts](#other-parts)
-  - [External components](#external-components)
+  
 
 ## Summary
 This github repository details the construction of a proof of concept digital skydiving altimeter.
@@ -26,6 +25,8 @@ It is based on a pressure sensor board using the MS5637 chip and a 1.3" OLED SH1
 The only interface elements are an on/off switch and a USB micro-B charging port. When first switched on the zeroed altitude is displayed in thousands of feet. A large font is used for digits above 99 feet. Eg. 13.532 indicates 13,532 feet above initial switching on altitude, with 13.5 displayed in a large font and 32 in small. Also a leading zero is dsiplayed for altitiudes inclusively between 100 and 999 feet. Eg 852 feet is displayed as 0.852 with 0.8 in large font and  52 in small.
 
 In addition on the top line in a small font is displayed the temperature in Celsius on the pressure sensor board, the current voltage of the LiPo battery, its % remaining capacity and a graphic of the same. This also indicates if the battery is being charged. See third picture below.
+
+It is too large to be practical. The Screen needs to have better visibility in sunlight. The on/off switch needs to be flush/membrane and have a Cypress method to avoid accidental switching off. Probably use a small ESP32C3 board with battery management next time. Smaller battery and 3D printed case. 
 
 If you just want to build the altimeter the go to [Assembly](#assembly) and then [HEX file](#hex-file).
 
