@@ -188,7 +188,7 @@ It interfaces with 3 peripheral boards. Using I2C it sets up the Pressure sensor
 Below is the main source code file [Altimeter.ino](Code/Altimeter/Altimeter.ino).<br>
 It creates objects representing the Pressure sensor board, Battery level board and OLED screen. These are initialised in the setup() function and then polled in the loop() function. The charging status of the LiPo battery is also polled in the loop() function via pin D12 of the Pro Mini.<br>
 Header files are included to access the libraries for each object created above. in particular ["MS5637.h"](Code/Altimeter/MS5637.h) for the pressure sensor (U2), ["SH1106.h"](Code/Altimeter/SH1106.h) for the OLED screen (U1) and <Adafruit_MAX1704X.h> for the battery level board (U5).
-The first two have been customized/simplified from existing library code and as such have been explicitly included in the directory of the main source Altimeter.ino file ie. both the *.h and *.cpp files. As such they are shown and discussed below. The last header refers to an external vendors library that was installed via the Arduino IDE. The source code for this is not visible and is not discussed. 
+The first two have been customized/simplified from existing library code and as such have been explicitly included in the directory of the main source Altimeter.ino file ie. both the *.h and *.cpp files. As such they are shown and discussed below. The last header refers to an external vendors library that was installed via the Arduino IDE. The source code for this is not visible and is not further discussed though if you are interested the code is informed by the [MAX17048-MAX17049.pdf](Extra/MAX17048-MAX17049.pdf). 
 
 ```cpp
 #include "MS5637.h"
@@ -624,7 +624,7 @@ class SH1106 {
 ```
 
 Below is the source file [SH1106.cpp](Code/Altimeter/SH1106.cpp) for my OLED screen (U1) "library".<br>
-It uses a custom bit-bashed SPI interface explicitly coded here. Ultimately this code is informed by the [SH1106.pdf](Extra/SH1106.pdf) document that about driver and controller chip used by the display voard. It also includes the Display.h file which contains all the font and graphic data needed by the display
+It uses a custom bit-bashed SPI interface explicitly coded here. Ultimately this code is informed by the [SH1106.pdf](Extra/SH1106.pdf) document that about driver and controller chip used by the display voard. It also includes the Display.h file which contains all the font and graphic data needed by the display.
 
 ```cpp
 #include "Arduino.h"
@@ -1078,7 +1078,10 @@ void SH1106::writeEND() {
 }
 ```
 
-TEXT
+Below is the header file [Display.h](Code/Altimeter/Display.h) for my OLED screen (U1) "library".
+It contains contains graphics and various font data in a suitable format (1-byte vertical slicing).
+This data is stored in program memory (using the PROGMEM keyword). The larger fonts where generated using 
+[LCDAssistant.exe](Extra/LCDAssistant.exe) and discussed [below](#lcd-assistant).
 
 ```cpp
 // bytes for displaying a battery gauge,
@@ -1095,21 +1098,16 @@ const uint8_t Battery_ [] PROGMEM = {
   B10011001,
   B00100100,
   B00000000,
-  0x44,	0x2A,	0x11 // charging 'icon'
+  0x44,	0x2A, 0x11 // charging 'icon'
 };
 
 // ibm 8x8 font, vertical-slicing, page1
 const uint8_t Font8x8_ [][8] PROGMEM = {
   {0x00, 0x06, 0x0F, 0x09, 0x0F, 0x06, 0x00, 0x00},  // 00b0 (degree)
-//  {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF},  // 0000 (uni0000.dup1)
   {0x66, 0x36, 0x18, 0x6C, 0x66, 0x00, 0x00, 0x00},  // small percent (custom)
-//  {0x7E, 0x81, 0x95, 0xB1, 0xB1, 0x95, 0x81, 0x7E},  // 0001 (uni0001) 
   {0x7F, 0x09, 0x09, 0x09, 0x00, 0x00, 0x3F, 0x40}, // "FULL" in 3 custom chars
   {0x40, 0x40, 0x3F, 0x00, 0x00, 0x7F, 0x40, 0x40}, // very fudgee fix
   {0x40, 0x00, 0x7F, 0x40, 0x40, 0x40, 0x00, 0x00}, //
-//  {0x7E, 0xFF, 0xEB, 0xCF, 0xCF, 0xEB, 0xFF, 0x7E},  // 0002 (uni0002)
-//  {0x0E, 0x1F, 0x3F, 0x7E, 0x3F, 0x1F, 0x0E, 0x00},  // 0003 (uni0003)
-//  {0x08, 0x1C, 0x3E, 0x7F, 0x3E, 0x1C, 0x08, 0x00},  // 0004 (uni0004)
   {0x18, 0xBA, 0xFF, 0xFF, 0xFF, 0xBA, 0x18, 0x00},  // 0005 (uni0005)
   {0x10, 0xB8, 0xFC, 0xFF, 0xFC, 0xB8, 0x10, 0x00},  // 0006 (uni0006)
   {0x00, 0x00, 0x18, 0x3C, 0x3C, 0x18, 0x00, 0x00},  // 0007 (uni0007)
@@ -1430,13 +1428,18 @@ const uint8_t FontNums32x48_ [] PROGMEM = {
 
 ### LCD Assistant
 download from https://en.radzio.dxp.pl/bitmap_converter/
-I have used this to generate files for this project. Fonts, splash screens, graphics. Bitmaps generated with GIMP.
-It only runs on Windows. No fancy downloads necessary. Just run the LCDAssistant.exe file from anywhere.
-Its exe file is availble in the Extra directory.
+I have used this to generate font files for this project. Fonts, splash screens, graphics. Bitmaps generated with GIMP. It only runs on Windows. No fancy downloads necessary. Just run the [LCDAssistant.exe](Extra/LCDAssistant.exe)  file from anywhere. Its exe file is available in the Extra directory.
 
 LCD Assistant is a free tool for converting monochromatic bitmaps to data arrays for easy use with programs for embedded systems with microcontrollers and graphics monochromatic LCD displays like a T6963C, KS0108, SED1335 etc. Program creates files for use with any C compiler : for AVR, ARM, PIC, 8051 and ohter microcontrollers. You can use directly with Arduino, mbed and any other design environment based on C compiler. If you use graphic LCDs and you want to display pictures, this program is for You! You can draw an image in you best graphic editor and save it in a *.bmp file.
 
 To convert image from bitmap file (or other standard graphics file format) to data array select from File menu command 'Load image'. Next, select byte orientation (for example : vertical for KS0108, SED1520, SPLC0501C etc; horizontal for : T6963C, SED1335 etc). If in data array must be image size (width and height) select 'Include size' checkbox and specify endianness of size (for example: Little endian for AVR; Big endian for ST7). Size are placed in two 16-bit variables at the begin of data array. Next, specify pixels/byte parameter. If display can support miscellaneous font size (displays with T6963C controller) image can be converted to array of bytes with specified amount of pixels in each byte. At last select from "File" menu command "Save output". Data array will be saved in specified file. Next, just include this file into project and use array name as parameter for function that displays bitmap on LCD. If you have trouble with use generating file, or program will generate wrong files please let me know.
+
+Most of the font bitmaps and the resulting code fragments generated using [LCDAssistant.exe](Extra/LCDAssistant.exe) are availabe in Extra the directory of this repository and have been integrated into [Display.h](Code/Altimeter/Display.h)
+
+![alt text](Images/image-LCD0.png)
+
+![alt text](Images/image-LCD1.png)
+
 
 ### HEX file
 
