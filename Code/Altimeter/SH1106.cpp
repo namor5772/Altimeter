@@ -35,11 +35,14 @@ void SH1106::DataMode() {
 
 // bit-bashed SPI write a byte code using cls and mos pins
 void SH1106::Write(uint8_t d) {
+  shiftOut(mosPin, clkPin, MSBFIRST, d);
+/*
   for (int i=7; i>=0; --i) {
     digitalWrite(clkPin, LOW);
     digitalWrite(mosPin, d >> i & 1);
     digitalWrite(clkPin, HIGH);
   }
+*/  
 }
 
 void SH1106::TransferEnd() {
