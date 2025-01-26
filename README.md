@@ -1461,7 +1461,9 @@ In order to program the Pro Mini you do not even have to use the Arduino IDE as 
   
 
 ### Core components
-Pricing and availability as of 26-Jan-2025.
+Pricing and availability as of 27-Jan-2025. Total cost is $221.47, but clearly some of the items will be usable in many other projects or you will already have them. The pro rata cost is __$138.66__
+
+You will also need a soldering iron and solder, some sellotape and a glup gun with glue sticks. Also some super glue.
 
 | Qty | Product | Description | AUD Cost | Comment | Designator |
 | --- | --- | --- | --- | --- | --- |
@@ -1471,22 +1473,25 @@ Pricing and availability as of 26-Jan-2025.
 | 1 | [ADA5580](https://core-electronics.com.au/adafruit-max17048-lipoly-liion-fuel-gauge-and-battery-monitor-stemma-jst-ph-qt-qwiic.html) | Adafruit I2C 5V MAX17048 LiPoly / LiIon [Fuel Gauge](Images/FuelGauge.png) and Battery Monitor - STEMMA JST PH & QT / Qwiic | $11.45 | based on the [MAX17048 chip](Extra/MAX17048-MAX17049.pdf) | U5 |
 | 1 | [ADA1904](https://core-electronics.com.au/adafruit-micro-lipo-w-microusb-jack-usb-liion-lipoly-charger-v1.html) | Adafruit Micro Lipo w/MicroUSB Jack - USB LiIon/LiPoly [charger](Images/Charger.png) - v1 | $13.85 | based on the [MCP73831 chip](Extra/MCP73831.pdf) | U4 |
 | 1 | [POLOLU-2564](https://core-electronics.com.au/pololu-5v-step-up-voltage-regulator-u1v10f5.html) | Pololu 5V Step-Up Voltage [Regulator](Images/VoltageRegulator.png) U1V10F5 | $10.40 | based on this [chip](Extra/tps61200_193680627bc.pdf) | U3 |
+| 1 | [XC4464](https://jaycar.com.au/p/XC4464) | Duinotech Arduino Compatible USB to [Serial Adaptor](Images/Adaptor.png) (uses FT232 chip) | $28.95 | used to program the Arduino Pro Mini (XC1) | $7.24 cost used |
 | 1 | [S4724](https://www.altronics.com.au/p/s4724-3.7v-1100mah-polymer-lithium-ion-battery-lipo/) | 3.7V 1100mAh Polymer Lithium Ion [Battery](Images/LiPoBattery.png) (LiPo) | $21.95 | The LiPo battery that powers this project | Connects to U4 using JST-PH connector |
 | 1 | [HB6004](https://jaycar.com.au/p/HB6004) | Jiffy [Case](Images/Case.png) Imac Blue UB5 | $3.45 | Enclosure for project, 83mm x 54mm x 31mm |  |
 | 1 | [SS0812](https://jaycar.com.au/p/SS0812) | Sub-miniature DPDT Panel Mount [Switch](Images/Switch.png) | $1.65 | on/off switch to power this altimeter | SW1 |
-| 1 | [HP9544](https://jaycar.com.au/p/HP9544) | PC [Boards](Images/VeroBoard.png) Vero Type Strip - 95mm x 305mm | $15.50 | Contains the circuit | |
-| 1 | [XC4464](https://jaycar.com.au/p/XC4464) | Duinotech Arduino Compatible USB to [Serial Adaptor](Images/Adaptor.png) (uses FT232 chip) | $28.95 | used to program the Arduino Pro Mini (XC1) ||
+| 1 | [HP9544](https://jaycar.com.au/p/HP9544) | PC [Boards](Images/VeroBoard.png) Vero Type Strip - 95mm x 305mm | $15.50 | Contains the circuit | $3.00 cost used |
+
 
 
 ### Other parts
 
 | Qty | Product | Description | AUD Cost | Comment | Designator |
 | --- | --- | --- | --- | --- | --- |
-| 1 | [WW4030](https://jaycar.com.au/p/WW4030) | Tinned Copper Wire 22AWG - 100 gram Roll | $23.95 | for wiring up above Vero board | |
-|1 | [HM3212](https://jaycar.com.au/p/HM3212) | 40 Pin Header Terminal Strip ( only need 4 pins ) | $1.45 | for soldering in sections to boards to attach to veroboard | |
-|1 | [WH3004](https://jaycar.com.au/p/WH3004) | Yellow Light Duty Hook-up Wire - 25m (less than 30cm needed) | $7.95 | used for miscellaneous connections | |
-|1 | [WH3007](https://jaycar.com.au/p/WH3007) | White Light Duty Hook-up Wire - 25m (less than 30cm needed) | $7.95 | used for miscellaneous connections | |
-|1 | [HP0924](https://jaycar.com.au/p/HP0924) | M3 x 12mm Tapped Nylon Spacers - Pk.25 ( only need 4 x 3mm )| $11.95 | For mounting screen to Jiffy case | |
-|1 | [HP0403](https://jaycar.com.au/p/HP0403) | M3 x 10mm Steel Screws - Pk.25 ( only need 4 )| $3.55 | For mounting screen to Jiffy case | |
-|1 | [HP0425](https://jaycar.com.au/p/HP0425) | M3 Steel Nuts - Pk.25 ( only need 4 )| $3.70 | For mounting screen to Jiffy case | |
-|1 | [HP0148](https://jaycar.com.au/p/HP0148) | 3mm Nylon Washers - Pk.10 ( only need 0 )| $2.95 | For mounting screen to Jiffy case | |
+| 1 | [WW4030](https://jaycar.com.au/p/WW4030) | Tinned Copper [Wire](Images/CopperWire.png) 22AWG - 100 gram Roll | $19.95 | for wiring up above Vero board | $0.80 cost used|
+| 1 | [HM3212](https://jaycar.com.au/p/HM3212) | 40 Pin Header Terminal [Strip](Images/TerminalStrip.png) (used most) | $1.10 | for soldering in sections to boards to attach to veroboard | |
+| 1 | [WH3004](https://jaycar.com.au/p/WH3004) | Yellow Light Duty Hook-up [Wire](Images/WireYellow.png) - 25m (less than 30cm needed) | $5.95 | used for miscellaneous connections | $0.08 cost used |
+| 1 | [WH3007](https://jaycar.com.au/p/WH3007) | White Light Duty Hook-up [Wire](Images/WireWhite.png) - 25m (less than 30cm needed) | $5.95 | used for miscellaneous connections | $0.08 cost used|
+| 1 | [HP0924](https://jaycar.com.au/p/HP0924) | M3 x 12mm Tapped Nylon [Spacers](Images/Spacers.png) - Pk.25 (only need 4x 3mm)| $9.95 | For mounting screen to Jiffy case | $0.80 cost used |
+| 1 | [HP0403](https://jaycar.com.au/p/HP0403) | M3 x 10mm Steel [Screws](Images/Screws.png) - Pk.25 (only need 4) | $2.95 | For mounting screen to Jiffy case | $0.48 cost used |
+| 1 | [HP0425](https://jaycar.com.au/p/HP0425) | M3 Steel [Nuts](Images/Nuts.png) - Pk.25 (only need 4)| $2.95 | For mounting screen to Jiffy case | $0.48 cost used |
+| 1 | [HP0148](https://jaycar.com.au/p/HP0148) | 3mm Nylon [Washers](Images/Washers.png) - Pk.10 (only need 0)| $2.50 | For mounting screen to Jiffy case | $0.00 cost used |
+| 1 | [HM3230](https://jaycar.com.au/p/HM3230) | 40 Pin Female Header [Strip](Images/FemaleStrip.png) (only 8 used) | $2.50 | For mounting screen to Jiffy case | $0.50 cost used |
+
