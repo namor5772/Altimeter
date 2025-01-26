@@ -1463,7 +1463,7 @@ In order to program the Pro Mini you do not even have to use the Arduino IDE as 
 ### Core components
 Pricing and availability as of 27-Jan-2025. Total cost is $221.47, but clearly some of the items will be usable in many other projects or you will already have them. The pro rata cost is __$138.66__
 
-You will also need a soldering iron and solder, some sellotape and a glup gun with glue sticks. Also some super glue.
+You will also need a soldering iron and solder, some sellotape and a glue gun with glue sticks. Also some super glue.
 
 | Qty | Product | Description | AUD Cost | Comment | Designator |
 | --- | --- | --- | --- | --- | --- |
