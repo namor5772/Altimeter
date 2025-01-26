@@ -1459,6 +1459,7 @@ In order to program the Pro Mini you do not even have to use the Arduino IDE as 
 
 ## Parts list
   
+
 ### Core components
 Pricing and availability as of 26-Jan-2025.
 
@@ -1474,10 +1475,9 @@ Pricing and availability as of 26-Jan-2025.
 | 1 | [HB6004](https://jaycar.com.au/p/HB6004) | Jiffy [Case](Images/Case.png) Imac Blue UB5 | $3.45 | Enclosure for project, 83mm x 54mm x 31mm |  |
 | 1 | [SS0812](https://jaycar.com.au/p/SS0812) | Sub-miniature DPDT Panel Mount [Switch](Images/Switch.png) | $1.65 | on/off switch to power this altimeter | SW1 |
 | 1 | [HP9544](https://jaycar.com.au/p/HP9544) | PC [Boards](Images/VeroBoard.png) Vero Type Strip - 95mm x 305mm | $15.50 | Contains the circuit | |
-| 1 | [XC4464](https://jaycar.com.au/p/XC4464) | Duinotech Arduino Compatible USB to Serial Adaptor (uses FT232 chip) | $28.95 | used to program the Arduino Pro Mini (XC1) ||
+| 1 | [XC4464](https://jaycar.com.au/p/XC4464) | Duinotech Arduino Compatible USB to [Serial Adaptor](Images/Adaptor.png) (uses FT232 chip) | $28.95 | used to program the Arduino Pro Mini (XC1) ||
 
-  
-(image.png)
+
 ### Other parts
 
 | Qty | Product | Description | AUD Cost | Comment | Designator |
